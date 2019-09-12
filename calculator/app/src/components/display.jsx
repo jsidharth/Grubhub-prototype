@@ -7,7 +7,7 @@ class Display extends Component {
       <div className="form-group">
         <div className="col-sm-14">
           <input
-            className="form-control"
+            className="form-control col-xs-3"
             id="disabledInput"
             type="text"
             value={this.props.value}

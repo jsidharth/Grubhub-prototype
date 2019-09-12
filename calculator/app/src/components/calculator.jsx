@@ -1,6 +1,8 @@
 import React, { Component } from "react";
+import axios from "axios";
 import Display from "./display";
 import Row from "./row";
+import _ from "lodash";
 class Calculator extends Component {
   state = {
     row_num: 4,
@@ -18,59 +20,58 @@ class Calculator extends Component {
     return rows;
   };
 
-  handleChangeDisplay = value => {
-    let { display_value, operands, operator } = this.state;
-    switch (value) {
-      case "C":
-        display_value = "";
-        break;
-      case "1":
-      case "2":
-      case "3":
-      case "4":
-      case "5":
-      case "6":
-      case "7":
-      case "8":
-      case "9":
-      case "0":
-        display_value += value;
-        break;
-      case "+":
-      case "-":
-      case "*":
-      case "/":
-        operands.push(display_value);
-        operator.push(value);
-        display_value = "";
-        break;
-      case "=":
-        if (display_value !== "") {
-          operands.push(display_value);
-        }
-        fetch('http://localhost:9000/').then(res => res.json())
-        .then(result => {
-            display_value = result.display_value;
-            this.setState({
-                display_value,
-                operands,
-                operator
-              });
-        });
-        break;
-      default:
-        break;
-    }
+  handleChangeState = (display_value, operands, operator) => {
     this.setState({
       display_value,
       operands,
       operator
     });
+  }
+
+  handleCalculation = (operands, operator) => {
+    return axios
+      .post("http://localhost:9000/calculate", {
+        operands,
+        operator
+      }).then(response => {
+        if(response.status === 200) {
+          this.handleChangeState(response.data, [], []);
+        } else {
+          this.handleChangeState('err', [], []);
+        }
+        return;
+      }).catch(error => {
+        this.handleChangeState('Err', [], []);
+        return;
+      })
+  };
+
+  handleChangeDisplay = value => {
+    let { display_value, operands, operator } = this.state;
+    if(value === 'C') {
+        display_value = "";
+        this.handleChangeState(display_value, [], []);
+    } else if(_.isFinite(parseInt(value))) {
+        display_value += value;
+        this.handleChangeState(display_value, operands, operator)
+    } else if(["+", "-", "*", "/"].includes(value)) {
+        operands.push(display_value);
+        operator.push(value);
+        display_value = "";
+        this.handleChangeState(display_value, operands, operator)
+    } else {
+      if (display_value !== "") {
+        operands.push(display_value);
+      }
+      this.handleCalculation(operands, operator);
+    }
   };
 
   render() {
     const cardStyle = {
-      maxWidth: "18rem"
+      maxWidth: "18rem",
+      marginLeft: "33%",
+      marginTop: "4%"
     };
     return (
       <main className="container">
