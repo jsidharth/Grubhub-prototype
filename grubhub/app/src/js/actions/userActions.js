@@ -1,7 +1,7 @@
 import actionTypes from "../constants/index";
 import axios from "axios";
 
-const addUser = payload => {
+const addUser = (payload, ownProps) => {
   return dispatch => {
     return axios
       .post("http://localhost:3001/user/register", payload)
@@ -9,6 +9,7 @@ const addUser = payload => {
         if (response.status === 200) {
           const userData = response.data;
           dispatch({ type: actionTypes.SET_USER, payload: userData });
+          ownProps.history.push(`/signin`);
         }
       });
   };
@@ -34,14 +35,12 @@ const loginUser = (payload, ownProps) => {
 
 const updateUser = (payload) => {
     return dispatch => {
-        console.log(payload);
         return axios.put(`http://localhost:3001/user/update/${payload.id}`, payload)
         .then(response => {
             if(response.status === 200) {
                 const userData = response.data.user;
                 userData.valid_update = true;
                 const restaurantData = response.data.restaurant;
-                console.log(response.data)
                 dispatch({ type: actionTypes.SET_USER, payload: userData });
                 dispatch({ type: actionTypes.SET_RESTAURANT, payload: restaurantData });
             }

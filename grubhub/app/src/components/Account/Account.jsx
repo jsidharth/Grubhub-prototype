@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {userActions, ownerActions} from "./../../js/actions/index"
+import {userActions, ownerActions} from "./../../js/actions/index";
 import './style.css';
 class Account extends Component {
   constructor() {
@@ -95,7 +95,6 @@ class Account extends Component {
   handleUpdate = e => {
     e.preventDefault();
     const payload = this.state;
-    console.log(this.state)
     this.props.updateUser(payload);
   };
   render() {

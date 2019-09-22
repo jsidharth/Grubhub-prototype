@@ -108,8 +108,8 @@ class Signup extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  addUser: payload => dispatch(userActions.addUser(payload))
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  addUser: payload => dispatch(userActions.addUser(payload, ownProps))
 });
 
 export default connect(null, mapDispatchToProps)(Signup);

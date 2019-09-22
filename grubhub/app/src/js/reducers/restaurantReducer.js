@@ -14,7 +14,6 @@ const restaurantReducer = (state = intialState, action) => {
           let newState = action.payload;
           return Object.assign({}, state, newState);
       default:
-          //console.log('Here')
         break;
     }
     return state;

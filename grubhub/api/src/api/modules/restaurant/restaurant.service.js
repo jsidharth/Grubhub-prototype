@@ -68,4 +68,8 @@ const updateDetails = (restaurantDetails) => {
       });
   });
 };
+
+const getOrders = (restaurant_id) => {
+    return 
+}
 export { createRestaurant, updateDetails, getRestaurant};
