@@ -10,7 +10,7 @@ class Signup extends Component {
       last_name: '',
       email: '',
       password: '',
-      type: ''
+      type: 'Customer'
     };
   }
   

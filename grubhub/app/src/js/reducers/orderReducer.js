@@ -18,7 +18,7 @@ const initialState = {
 const orderReducer = (state = initialState, action) => {
     let newState;
     switch (action.type) {
-        case actionTypes.SET_OWNER_ORDERS:
+        case actionTypes.SET_ORDERS:
             newState = action.payload;
             return Object.assign({}, state, newState);
         case actionTypes.SET_ORDER_DETAIL:

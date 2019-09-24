@@ -1,57 +1,74 @@
-import { NavLink } from 'react-router-dom';
-import { Navbar, ListGroup } from 'react-bootstrap';
-import React, { Component } from 'react';
-import './style.css';
+import { NavLink } from "react-router-dom";
+import { Navbar, ListGroup } from "react-bootstrap";
+import React, { Component } from "react";
+import {connect} from 'react-redux';
+import "./style.css";
 
-const routes = [
-  {
-    url: '/account',
-    name: 'Account Info',
-  },
-  {
-    url: '/order',
-    name: 'Orders',
-  },
-
-  {
-    url: '/menu',
-    name: 'Menu',
-  },
-];
-export default class Sidebar extends Component {
+const routes = {
+  owner: [
+    {
+      url: "/account",
+      name: "Account Info"
+    },
+    {
+      url: "/order",
+      name: "Orders"
+    },
+    {
+      url: "/menu",
+      name: "Menu"
+    }
+  ],
+  customer: [
+    {
+      url: "/search",
+      name: "Search"
+    },
+    {
+      url: "/account",
+      name: "Account Info"
+    },
+    {
+      url: "/order",
+      name: "Orders"
+    }
+  ]
+};
+class Sidebar extends Component {
   constructor(props) {
     super(props);
     this.state = {
       showSidebar: true,
       activeIndex: 0,
-      userId: 1,
+      userId: ''
     };
   }
 
   componentDidMount() {
     if (
-      window.location.pathname === '/signup' ||
-      window.location.pathname === '/' ||
-      window.location.pathname === '/signin'
+      window.location.pathname === "/signup" ||
+      window.location.pathname === "/" ||
+      window.location.pathname === "/signin"
     ) {
       this.setState({
-        showSidebar: false,
+        showSidebar: false
       });
     }
   }
 
   componentWillReceiveProps(nextProps) {
     if (
-      nextProps.location.pathname === '/signup' ||
-      nextProps.location.pathname === '/' ||
-      nextProps.location.pathname === '/signin'
+      nextProps.location.pathname === "/signup" ||
+      nextProps.location.pathname === "/" ||
+      nextProps.location.pathname === "/signin"
     ) {
       this.setState({
-        showSidebar: false,
+        showSidebar: false
       });
     } else {
       this.setState({
         showSidebar: true,
+        userId: nextProps.user.id
       });
     }
   }
@@ -66,25 +83,44 @@ export default class Sidebar extends Component {
               <ListGroup variant="flush">
                 <ListGroup.Item variant="light">
                   <Navbar.Brand>
-                    <NavLink to={'/'}>Grubhub</NavLink>
+                    <NavLink to={"/"}>Grubhub</NavLink>
                   </Navbar.Brand>
                 </ListGroup.Item>
-                {routes.map((route, index) => {
-                  return (
-                    <NavLink key={`/${userId}${route.url}`} to={`/${userId}${route.url}`}>
-                      <ListGroup.Item
-                        action
-                        variant="light"
-                        active={activeIndex === index}
-                        onClick={() => {
-                          this.setState({ activeIndex: index });
-                        }}
-                      >
-                        {route.name}
-                      </ListGroup.Item>
-                    </NavLink>
-                  );
-                })}
+                {this.props.user.type === "Owner"
+                  ? routes.owner.map((route, index) => {
+                      return (
+                        <NavLink
+                          key={`/${userId}${route.url}`}
+                          to={`/${userId}${route.url}`}>
+                          <ListGroup.Item
+                            action
+                            variant="light"
+                            active={activeIndex === index}
+                            onClick={() => {
+                              this.setState({ activeIndex: index });
+                            }}>
+                            {route.name}
+                          </ListGroup.Item>
+                        </NavLink>
+                      );
+                    })
+                  : routes.customer.map((route, index) => {
+                      return (
+                        <NavLink
+                          key={`/${userId}${route.url}`}
+                          to={`/${userId}${route.url}`}>
+                          <ListGroup.Item
+                            action
+                            variant="light"
+                            active={activeIndex === index}
+                            onClick={() => {
+                              this.setState({ activeIndex: index });
+                            }}>
+                            {route.name}
+                          </ListGroup.Item>
+                        </NavLink>
+                      );
+                    })}
               </ListGroup>
             </nav>
           </div>
@@ -93,3 +129,8 @@ export default class Sidebar extends Component {
     );
   }
 }
+const mapStateToProps = (state) => ({
+  user: state.user
+});
+
+export default connect(mapStateToProps)(Sidebar);

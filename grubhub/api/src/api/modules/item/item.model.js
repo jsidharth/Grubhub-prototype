@@ -41,7 +41,35 @@ const itemOrderModel = (sequelize, type) => {
         underscored: true
     });
 }
+
+const itemRestaurantModel = (sequelize, type) => {
+    return sequelize.define('restaurant_item', {
+        id: {
+            type: type.INTEGER,
+            primaryKey: true,
+            autoIncrement: true
+        },  
+        item_id: {
+            type: type.INTEGER,
+            references: {
+                model: 'items',
+                key: 'id'
+              }
+        },
+        restaurant_id: {
+            type: type.INTEGER,
+            references: {
+                model: 'restaurants',
+                key: 'id'
+              }
+        },
+        quantity: type.INTEGER
+    },{
+        underscored: true
+    });
+}
 export {
     itemModel,
-    itemOrderModel
+    itemOrderModel,
+    itemRestaurantModel
 };

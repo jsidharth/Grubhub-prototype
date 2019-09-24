@@ -91,4 +91,23 @@ const getOrderDetails = (order_id) => {
   })
 }
 
-export { getOrdersByRestaurant, updateOrder, getOrderDetails};
+const getOrdersByCustomer = user_id => {
+  return Orders.findAll({
+    where: {
+      user_id
+    }
+  }).then(allOrders => {
+    let current_orders = [], past_orders =[];
+    current_orders = allOrders.filter(order =>
+      ["NEW", "PREPARING", "READY"].includes(order.status)
+    );
+    past_orders = allOrders.filter(order =>
+      ["DELIVERED", "CANCELLED"].includes(order.status)
+    );
+    return {
+      current_orders,
+      past_orders
+    };
+  });
+};
+export { getOrdersByRestaurant, updateOrder, getOrderDetails, getOrdersByCustomer};

@@ -26,7 +26,7 @@ const loginUser = (payload, ownProps) => {
           if (userData.type === "Owner") {
             ownProps.history.push(`/${userData.id}/account`);
           } else {
-            ownProps.history.push(`/${userData.id}/account`);
+            ownProps.history.push(`/${userData.id}/search`);
           }
         }
       });
