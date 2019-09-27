@@ -12,7 +12,6 @@ import Search from './components/Search/Search';
 import SearchResults from './components/Search/SearchResults';
 import Restaurant from './components/Restaurant/Restaurant';
 import Cart from './components/Cart/Cart';
-import Unauthorized from './components/Signout/Signout';
 
 const Routes = () => {
   return (
@@ -30,7 +29,6 @@ const Routes = () => {
       <Route exact path="/searchresults" component={SearchResults} />
       <Route exact path="/restaurant/detail/:restaurant_id" component={Restaurant} />
       <Route exact path="/:id/cart" component={Cart} />
-      <Route exact path="/unauthorize" component={Unauthorized}/>
     </div>
   );
 };
