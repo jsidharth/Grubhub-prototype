@@ -129,6 +129,7 @@ class Item extends Component {
               onChange={this.handleChange}
             />
           </div>
+          {/* TODO: Add DELETE */}
           {this.state.update ? (
             <button
               type="submit"

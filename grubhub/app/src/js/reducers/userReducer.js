@@ -8,14 +8,19 @@ const intialState = {
   type: "",
   token: "",
   image: "",
-  valid: false
+  invalid: false
 };
 
 const userReducer = (state = intialState, action) => {
+  let newState;
   switch (action.type) {
     case actionTypes.SET_USER:
-        let newState = action.payload;
-        newState.valid = true;
+        newState = action.payload;
+        newState.invalid = false;
+        return Object.assign({}, state, newState);
+    case actionTypes.SET_INVALID:
+        newState = action.payload;
+        newState.invalid = true;
         return Object.assign({}, state, newState);
     default:
         //console.log('Here')

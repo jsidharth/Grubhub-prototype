@@ -119,7 +119,9 @@ const searchItems = (search_key) => {
                 }
             });
         }).then(restaurants => {
-            return _.chain(restaurants).compact().uniqBy('id').value();
+            return {
+                search_results: _.chain(restaurants).compact().uniqBy('id').value()
+            };
         });
     });
 }

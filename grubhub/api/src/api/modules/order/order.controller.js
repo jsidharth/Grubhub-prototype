@@ -58,5 +58,15 @@ orderRouter.get("/customer/:user_id", (req, res) => {
     });
 });
 
+orderRouter.post("/confirm", (req, res) => {
+  const order_details = req.body;
+  return orderService.createOrder(order_details).then(result => {
+    res.status(200).json(result);
+  }).catch(err => {
+    res.status(500).json({
+      message: err.message
+    });
+  });
+});
 
 export default orderRouter;

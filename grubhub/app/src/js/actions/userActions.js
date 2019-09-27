@@ -1,5 +1,6 @@
 import actionTypes from "../constants/index";
 import axios from "axios";
+import cookie from "js-cookie";
 
 const addUser = (payload, ownProps) => {
   return dispatch => {
@@ -8,6 +9,7 @@ const addUser = (payload, ownProps) => {
       .then(response => {
         if (response.status === 200) {
           const userData = response.data;
+          cookie.set('token', userData.token, {expires: 1});
           dispatch({ type: actionTypes.SET_USER, payload: userData });
           ownProps.history.push(`/signin`);
         }
@@ -22,6 +24,7 @@ const loginUser = (payload, ownProps) => {
       .then(response => {
         if (response.status === 200) {
           const userData = response.data;
+          cookie.set('token', userData.token, {expires: 1});
           dispatch({ type: actionTypes.SET_USER, payload: userData });
           if (userData.type === "Owner") {
             ownProps.history.push(`/${userData.id}/account`);
@@ -29,7 +32,9 @@ const loginUser = (payload, ownProps) => {
             ownProps.history.push(`/${userData.id}/search`);
           }
         }
-      });
+      }).catch(err => {
+        dispatch({ type: actionTypes.SET_INVALID, payload: {invalid: true} });
+      })
   };
 };
 

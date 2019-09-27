@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { ownerActions } from "../../js/actions";
-import tea from './../../assets/tea.jpg';
-import './style.css';
+import { Container, Row, Card } from "react-bootstrap";
+import tea from "./../../assets/tea.jpg";
+import "./style.css";
 class OwnerMenu extends Component {
   constructor() {
     super();
@@ -37,22 +38,30 @@ class OwnerMenu extends Component {
                     <label className="col-sm-2 col-form-label col-form-label-lg">
                       {eachSection.section}
                     </label>
-                    <div class="card-deck">
-                    {eachSection.items.map(item => {
-                      let item_detail_link = `/item/detail/${item.id}`;
-                      return (
-                        <Link to={item_detail_link}>
-                          <div class="card menu_item" >
-                            <img src={tea} class="card-img-top img-fluid img-thumbnail" alt="..."></img>
-                            <div class="card-body">
-                              <h5 class="card-title">{item.name}</h5>
-                              <p class="card-text">{item.description}</p>
-                              <p class="card-text">{item.rate}</p>
-                            </div>
-                          </div>
-                        </Link>
-                      );
-                    })}
+                    <div>
+                      <Container>
+                        <Row>
+                          {eachSection.items.map(item => {
+                            let item_detail_link = `/item/detail/${item.id}`;
+                            return (
+                              <Link to={item_detail_link}>
+                                <div className="m-2">
+                                <Card style={{ width: '14rem' }}>
+                                    <Card.Img variant="top" src={tea}/>
+                                    <Card.Body>
+                                      <Card.Title>{item.name}</Card.Title>
+                                      <Card.Text>
+                                        <p>{item.description}</p>
+                                        <p>{item.rate}</p>
+                                      </Card.Text>
+                                    </Card.Body>
+                                  </Card>
+                                </div>
+                              </Link>
+                            );
+                          })}
+                        </Row>
+                      </Container>
                     </div>
                   </div>
                 );

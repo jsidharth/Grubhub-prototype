@@ -10,11 +10,15 @@ class Signin extends Component {
         this.state = {
             email: "",
             password: "",
-            valid: false
+            invalid: false
           };
     }
     componentWillReceiveProps(nextProps) {
-        if(nextProps.user.valid) {
+      //TODO: Validation
+        if(nextProps.user.invalid) {
+          this.setState({
+            invalid: true
+          })
         }
     }
   handleChange = (e) => {
@@ -59,13 +63,13 @@ class Signin extends Component {
             Sign in
           </button>
         </form>
+        {this.state.invalid ? (<p>Invalid Credentials</p>) : null}
       </div>
     );
   }
 }
 
 const mapStateToProps = (state) => ({
-    history: state.history,
     user: state.user
 });
 

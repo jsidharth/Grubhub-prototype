@@ -92,6 +92,9 @@ const getRestaurantMenu = (restaurant_id) => {
         }
       ]
     }).then(allItems => {
+      if(!allItems || !allItems.length) {
+        return [];
+      }
       const groupedItems = _.chain(allItems).map('item').groupBy('section').map((value, key) => ({
         section: key,
         items: value
@@ -101,4 +104,22 @@ const getRestaurantMenu = (restaurant_id) => {
   })
 }
 
-export { createRestaurant, updateDetails, getRestaurant, getRestaurantMenu};
+const getRestaurantDetails = (restaurant_id) => {
+  return Restaurants.findOne({
+    where: {
+      id: restaurant_id
+    }
+  }).then(restaurant => {
+    if(!restaurant) {
+      throw new Error('Restaurant not found');
+    }
+    return getRestaurantMenu(restaurant_id).then(menu => {
+      restaurant.dataValues.menu = menu;
+      return {
+        current_restaurant: restaurant
+      };
+    });
+  });
+}
+
+export { createRestaurant, updateDetails, getRestaurant, getRestaurantMenu, getRestaurantDetails};

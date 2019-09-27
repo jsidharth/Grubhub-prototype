@@ -24,6 +24,17 @@ restaurantRouter.get('/menu/:restaurant_id', (req, res) => {
           message: err.message
       });
   })
-})
+});
+
+restaurantRouter.get('/detail/:restaurant_id', (req, res) => {
+  const restaurant_id = req.params.restaurant_id;
+  restaurantService.getRestaurantDetails(restaurant_id).then(result => {
+    res.status(200).json(result);
+  }).catch(err => {
+    res.status(500).json({
+      message: err.message
+    });
+  });
+});
 
 export default restaurantRouter;

@@ -1,3 +1,8 @@
-.menu_item {
-    width: 25%
-}
+.custom-card {
+    margin: 0 30px;
+    border: 1px double;
+    width: 200px;
+    height: 100px;
+    text-align: center;
+  }
+  

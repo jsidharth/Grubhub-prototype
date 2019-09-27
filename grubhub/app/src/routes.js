@@ -8,7 +8,11 @@ import OrderList from './components/Order/Orderlist';
 import OrderDetail from './components/Order/Orderdetail';
 import OwnerMenu from './components/Menu/OwnerMenu';
 import Item from './components/Item/Item';
-import Search from './components/Search/Search'
+import Search from './components/Search/Search';
+import SearchResults from './components/Search/SearchResults';
+import Restaurant from './components/Restaurant/Restaurant';
+import Cart from './components/Cart/Cart';
+import Unauthorized from './components/Signout/Signout';
 
 const Routes = () => {
   return (
@@ -23,6 +27,10 @@ const Routes = () => {
       <Route exact path="/item" component={Item} />
       <Route exact path="/item/detail/:item_id" component={Item} />
       <Route exact path="/:id/search" component={Search} />
+      <Route exact path="/searchresults" component={SearchResults} />
+      <Route exact path="/restaurant/detail/:restaurant_id" component={Restaurant} />
+      <Route exact path="/:id/cart" component={Cart} />
+      <Route exact path="/unauthorize" component={Unauthorized}/>
     </div>
   );
 };

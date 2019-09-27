@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { Navbar, ListGroup } from "react-bootstrap";
 import React, { Component } from "react";
 import {connect} from 'react-redux';
+import cookie from "js-cookie";
 import "./style.css";
 
 const routes = {
@@ -31,6 +32,10 @@ const routes = {
     {
       url: "/order",
       name: "Orders"
+    },
+    {
+      url: "/cart",
+      name: "Cart"
     }
   ]
 };
@@ -48,7 +53,8 @@ class Sidebar extends Component {
     if (
       window.location.pathname === "/signup" ||
       window.location.pathname === "/" ||
-      window.location.pathname === "/signin"
+      window.location.pathname === "/signin"||
+      window.location.pathname === "/unauthorized"
     ) {
       this.setState({
         showSidebar: false
@@ -60,7 +66,8 @@ class Sidebar extends Component {
     if (
       nextProps.location.pathname === "/signup" ||
       nextProps.location.pathname === "/" ||
-      nextProps.location.pathname === "/signin"
+      nextProps.location.pathname === "/signin"||
+      nextProps.location.pathname === "/unauthorized"
     ) {
       this.setState({
         showSidebar: false
@@ -72,7 +79,11 @@ class Sidebar extends Component {
       });
     }
   }
-
+  handleSignout = e => {
+    e.preventDefault();
+    cookie.remove('token');
+    window.location.href = '/signin';
+  }
   render() {
     const { showSidebar, activeIndex, userId } = this.state;
     return (
@@ -85,6 +96,7 @@ class Sidebar extends Component {
                   <Navbar.Brand>
                     <NavLink to={"/"}>Grubhub</NavLink>
                   </Navbar.Brand>
+                  <button type="button" onClick = {this.handleSignout} class="btn btn-outline-dark">Sign Out</button>
                 </ListGroup.Item>
                 {this.props.user.type === "Owner"
                   ? routes.owner.map((route, index) => {

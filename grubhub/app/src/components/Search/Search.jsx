@@ -40,7 +40,7 @@ class Search extends Component {
             onChange={this.handleChange}
           />
           </div>
-          <button type="submit" class="btn btn-outline-dark">
+          <button type="submit" className="btn btn-outline-dark">
             Search
           </button>
         </form>
@@ -48,7 +48,7 @@ class Search extends Component {
     )
   }
 }
-const mapDispatchToProps = (dispatch) => ({
-    getSearchResults: payload => dispatch(customerActions.getSearchResults(payload))
+const mapDispatchToProps = (dispatch, ownProps) => ({
+    getSearchResults: payload => dispatch(customerActions.getSearchResults(payload, ownProps))
 });
 export default connect(null, mapDispatchToProps)(Search);
