@@ -17,6 +17,9 @@ const itemReducer = (state=initialState, action) => {
         case actionTypes.CLEAR_ITEM:
             newState = initialState;
             return Object.assign({}, state, newState);
+        case actionTypes.SET_ITEM_IMAGE:
+            newState = action.payload;
+            return Object.assign({}, state, newState);
         default:
             break;
     }

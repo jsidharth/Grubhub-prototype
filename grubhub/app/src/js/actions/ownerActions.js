@@ -49,19 +49,19 @@ const changeStatus = payload => {
 };
 
 const getOrderDetail = payload => {
-    return dispatch => {
-        return axios
-          .get(`http://localhost:3001/order/${payload.order_id}`)
-          .then(response => {
-            if (response.status === 200) {
-              dispatch({
-                type: actionTypes.SET_ORDER_DETAIL,
-                payload: response.data
-              });
-            }
+  return dispatch => {
+    return axios
+      .get(`http://localhost:3001/order/${payload.order_id}`)
+      .then(response => {
+        if (response.status === 200) {
+          dispatch({
+            type: actionTypes.SET_ORDER_DETAIL,
+            payload: response.data
           });
-      };
-}
+        }
+      });
+  };
+};
 
 const getMenu = payload => {
   return dispatch => {
@@ -71,12 +71,12 @@ const getMenu = payload => {
         if (response.status === 200) {
           dispatch({
             type: actionTypes.SET_MENU,
-            payload: {menu: response.data}
+            payload: { menu: response.data }
           });
         }
       });
   };
-}
+};
 
 const getCustomerOrders = payload => {
   return dispatch => {
@@ -92,4 +92,56 @@ const getCustomerOrders = payload => {
       });
   };
 };
-export { getRestaurant, getRestaurantOrders, changeStatus, getOrderDetail, getMenu, getCustomerOrders};
+
+const editSection = payload => {
+  return dispatch => {
+    return axios
+      .put("http://localhost:3001/restaurant/menu/section", payload)
+      .then(response => {
+        if (response.status === 200) {
+          dispatch({
+            type: actionTypes.SET_MENU,
+            payload: { menu: response.data }
+          });
+        }
+      });
+  };
+};
+
+const deleteSection = payload => {
+  return dispatch => {
+    return axios
+      .put("http://localhost:3001/restaurant/menu/section/delete", payload)
+      .then(response => {
+        if (response.status === 200) {
+          dispatch({
+            type: actionTypes.SET_MENU,
+            payload: { menu: response.data }
+          });
+        }
+      });
+  };
+}
+
+const uploadRestaurantImage = (payload) => {
+  return dispatch => {
+      return axios.post(`http://localhost:3001/user/upload/image`,payload)
+      .then(response => {
+          if(response.status === 200) {
+              dispatch({ type: actionTypes.SET_RESTAURANT_IMAGE, payload: response.data});
+          }
+      });
+  }
+}
+
+export {
+  getRestaurant,
+  getRestaurantOrders,
+  changeStatus,
+  getOrderDetail,
+  getMenu,
+  getCustomerOrders,
+  editSection,
+  deleteSection,
+  uploadRestaurantImage
+};

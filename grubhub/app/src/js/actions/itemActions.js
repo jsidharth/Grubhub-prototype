@@ -1,5 +1,6 @@
 import actionTypes from "../constants/index";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const addItem = (payload) => {
     return dispatch => {
@@ -44,9 +45,21 @@ const deleteItem = (payload, ownProps) => {
         });
     }
 }
+
+const uploadImage = (payload) => {
+    return dispatch => {
+        return axios.post(`http://localhost:3001/user/upload/image`,payload)
+        .then(response => {
+            if(response.status === 200) {
+                dispatch({ type: actionTypes.SET_ITEM_IMAGE, payload: response.data});
+            }
+        });
+    }
+}
 export {
     addItem,
     getItem,
     updateItem,
-    deleteItem
+    deleteItem,
+    uploadImage
 }

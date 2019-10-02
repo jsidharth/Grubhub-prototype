@@ -6,6 +6,7 @@ import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import store from "./js/store/index";
 import { Provider } from "react-redux";
+import "react-toastify/dist/ReactToastify.css";
 
 ReactDOM.render(
   <Provider store={store}>

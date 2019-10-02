@@ -3,6 +3,7 @@ import { Users } from "../../../sequelize";
 import * as restaurantService from "../restaurant/restaurant.service";
 import jwtSecret from "../../../../config/jwtConfig";
 import jwt from "jsonwebtoken";
+import { uploader } from "./../../../../config/cloudinaryConfig";
 
 const registerUser = userDetails => {
   return Users.findOne({
@@ -52,7 +53,16 @@ const loginUser = userCredentials => {
       return new Error("User Login failed!");
     }
     const token = jwt.sign({ id: user.id }, jwtSecret.secret);
-    const { id, first_name, last_name, email, type, phone, address, image} = user;
+    const {
+      id,
+      first_name,
+      last_name,
+      email,
+      type,
+      phone,
+      address,
+      image
+    } = user;
     return {
       id,
       first_name,
@@ -93,14 +103,14 @@ const updateUser = userDetails => {
         }).then(updatedUser => {
           if (updatedUser.type === "Owner") {
             const restaurantDetails = {
-              id: userDetails.restaurant_id || '',
+              id: userDetails.restaurant_id || "",
               restaurant_name: userDetails.restaurant_name,
               cuisine: userDetails.cuisine,
               restaurant_image: userDetails.restaurant_image,
               address: userDetails.restaurant_address,
               zipcode: userDetails.restaurant_zipcode,
               user_id: userDetails.user_id
-            }
+            };
             if (!userDetails.restaurant_id) {
               return restaurantService
                 .createRestaurant(restaurantDetails)
@@ -111,12 +121,14 @@ const updateUser = userDetails => {
                   };
                 });
             } else {
-              return restaurantService.updateDetails(restaurantDetails).then(restaurant => {
-                return {
-                  user: updatedUser,
-                  restaurant
-                }
-              });
+              return restaurantService
+                .updateDetails(restaurantDetails)
+                .then(restaurant => {
+                  return {
+                    user: updatedUser,
+                    restaurant
+                  };
+                });
             }
           } else {
             return {
@@ -127,4 +139,51 @@ const updateUser = userDetails => {
       });
   });
 };
-export { registerUser, loginUser, updateUser};
+
+const uploadImage = file => {
+  return uploader
+    .upload(file, {transformation: [{width: 150, height: 100, crop: "scale"}]})
+    .then(result => {
+      const image = result.url;
+      return ({
+        image
+      });
+    })
+    .catch(err => ({
+      messge: "someting went wrong while uploading image",
+      err
+    }));
+};
+
+const getUser = id =>{
+  return Users.findOne({
+    where: {
+      id
+    }
+  }).then(user => {
+    if(!user) {
+      throw new Error('User not found!');
+    }
+    const {
+      id,
+      first_name,
+      last_name,
+      email,
+      type,
+      phone,
+      address,
+      image
+    } = user;
+    return {
+      id,
+      first_name,
+      last_name,
+      email,
+      type,
+      phone,
+      address,
+      image
+    };
+  })
+}
+export { registerUser, loginUser, updateUser, uploadImage, getUser };

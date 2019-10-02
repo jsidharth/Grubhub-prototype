@@ -66,7 +66,7 @@ class Restaurant extends Component {
     return (
       <div>
         <div className="container-fluid">
-          {/* <img src={banner} className="img-fluid" alt="Responsive"/> */}
+          <img src={current_restaurant.image} className="img-fluid" alt="Responsive"/>
         </div>
         <div className="restaurant-detail">
           <div className="form-group row">
@@ -97,7 +97,7 @@ class Restaurant extends Component {
                             return (
                                 <div className="m-2">
                                 <Card style={{ width: '14rem' }} key = {item.id}>
-                                    <Card.Img variant="top" src={tea}/>
+                                    <Card.Img variant="top" src={item.image}/>
                                     <Card.Body>
                                       <Card.Title>{item.name}</Card.Title>
                                       <Card.Text>

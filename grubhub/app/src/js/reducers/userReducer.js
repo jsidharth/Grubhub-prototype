@@ -22,6 +22,9 @@ const userReducer = (state = intialState, action) => {
         newState = action.payload;
         newState.invalid = true;
         return Object.assign({}, state, newState);
+    case actionTypes.SET_PROFILE_IMAGE:
+        newState = action.payload;
+        return Object.assign({}, state, newState);
     default:
         //console.log('Here')
       break;

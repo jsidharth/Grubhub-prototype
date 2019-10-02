@@ -37,4 +37,26 @@ restaurantRouter.get('/detail/:restaurant_id', (req, res) => {
   });
 });
 
+restaurantRouter.put('/menu/section', (req, res) => {
+  const section = req.body;
+  restaurantService.updateSection(section).then(result => {
+    res.status(200).json(result);
+  }).catch(err => {
+    res.status(500).json({
+      message: err.message
+    });
+  });
+});
+
+restaurantRouter.put('/menu/section/delete', (req, res) => {
+  const section = req.body;
+  restaurantService.deleteSection(section).then(result => {
+    res.status(200).json(result);
+  }).catch(err => {
+    res.status(500).json({
+      message: err.message
+    });
+  });
+});
+
 export default restaurantRouter;

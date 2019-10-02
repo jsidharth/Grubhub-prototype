@@ -88,12 +88,11 @@ class Orderdetail extends Component {
               Customer Address
             </label>
             <div className="col-sm-10">
-              <input
-                type="text"
+              <textarea
                 className="form-control form-control-lg order_detail_input"
                 id="address"
                 value={this.state.order.address}
-                readOnly></input>
+                readOnly></textarea>
             </div>
           </div>
           <div className="form-group row">

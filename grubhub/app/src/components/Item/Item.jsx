@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { itemActions } from "./../../js/actions/index";
+import { Container, Row, Col, Image } from "react-bootstrap";
+import "./style.css";
 class Item extends Component {
   constructor(props) {
     super(props);
@@ -12,9 +14,11 @@ class Item extends Component {
       rate: "",
       image: "",
       restaurant_id: "",
-      update: false
+      update: false,
+      file: 'Choose file'
     };
   }
+  //TODO: Refresh issue for restaurant id
   componentDidMount() {
     if (this.props.match.params.item_id) {
       this.props.getItem({
@@ -28,7 +32,7 @@ class Item extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.item.id) {
+    if (nextProps.item.id && this.props.match.params.item_id) {
       const { id, name, description, section, rate, image } = nextProps.item;
       this.setState({
         id,
@@ -38,8 +42,13 @@ class Item extends Component {
         rate,
         image,
         restaurant_id: nextProps.restaurant_id,
-        update: true
+        update: true,
+        file: 'Choose file'
       });
+    } else {
+      this.setState({
+        image: nextProps.item.image
+      })
     }
   }
 
@@ -68,6 +77,14 @@ class Item extends Component {
       item_id: this.state.id
     };
     this.props.deleteItem(payload);
+  };
+
+  handleUpload = e => {
+    e.preventDefault();
+    const data = new FormData();
+    //TODO: add toaster for empty file
+    data.append("file", this.uploadInput.files[0] || '');
+    this.props.uploadImage(data);
   };
 
   render() {
@@ -118,25 +135,65 @@ class Item extends Component {
               onChange={this.handleChange}
             />
           </div>
-          <div className="form-group">
-            <label htmlFor="image">Image</label>
-            <input
-              type="text"
-              className="form-control"
-              id="image"
-              placeholder="image"
-              value={this.state.image}
-              onChange={this.handleChange}
-            />
+          <label htmlFor="image">Image</label>
+          <div className="form-inline image-upload">
+            <div className="custom-file">
+              <input
+                type="file"
+                className="custom-file-input"
+                id="file"
+                accept="image/*"
+                ref={ref => {
+                  this.uploadInput = ref;
+                }}
+                aria-describedby="fileUpload"
+                onChange = {(e) => {
+                  if(e.target.value) {
+                    let fileName = e.target.value.split('\\');
+                    this.setState({
+                      file: fileName && fileName.length ? fileName[fileName.length-1] : 'Choose file'
+                    })
+                  }
+                }}
+              />
+              <label className="custom-file-label" id="image-label" htmlFor="file">
+                {this.state.file}
+              </label>
+            </div>
+            <div className="input-group-append">
+              <button
+                className="btn btn-outline-secondary m-2"
+                type="button"
+                id="fileUpload"
+                onClick={this.handleUpload}>
+                Upload
+              </button>
+            </div>
           </div>
-          {/* TODO: Add DELETE */}
+          <div className="form-group">
+            <Container style={{ width: "30rem" }}>
+              <Row>
+                <Col xs={6} md={4}>
+                  <Image src={this.state.image} rounded />
+                </Col>
+              </Row>
+            </Container>
+          </div>
           {this.state.update ? (
-            <button
-              type="submit"
-              className="btn btn-primary m-3"
-              onClick={e => this.handleUpdate(e)}>
-              Update
-            </button>
+            <div>
+              <button
+                type="submit"
+                className="btn btn-primary m-3"
+                onClick={e => this.handleUpdate(e)}>
+                Update
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary m-3"
+                onClick={e => this.handleDelete(e)}>
+                Delete
+              </button>
+            </div>
           ) : (
             <button
               type="submit"
@@ -161,8 +218,10 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   addItem: payload => dispatch(itemActions.addItem(payload)),
   getItem: payload => dispatch(itemActions.getItem(payload)),
   updateItem: payload => dispatch(itemActions.updateItem(payload)),
-  deleteItem: payload => dispatch(itemActions.deleteItem(payload, ownProps))
+  deleteItem: payload => dispatch(itemActions.deleteItem(payload, ownProps)),
+  uploadImage: payload => dispatch(itemActions.uploadImage(payload))
 });
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps

@@ -3,23 +3,15 @@ import { connect } from "react-redux";
 import logo from './../../assets/grubhub-1177056.png';
 import './style.css';
 import {userActions} from '../../js/actions/index';
+import { ToastContainer } from "react-toastify";
 
 class Signin extends Component {
     constructor() {
         super();
         this.state = {
             email: "",
-            password: "",
-            invalid: false
+            password: ""
           };
-    }
-    componentWillReceiveProps(nextProps) {
-      //TODO: Validation
-        if(nextProps.user.invalid) {
-          this.setState({
-            invalid: true
-          })
-        }
     }
   handleChange = (e) => {
     this.setState({
@@ -63,7 +55,7 @@ class Signin extends Component {
             Sign in
           </button>
         </form>
-        {this.state.invalid ? (<p>Invalid Credentials</p>) : null}
+        <ToastContainer autoClose={2000} />
       </div>
     );
   }

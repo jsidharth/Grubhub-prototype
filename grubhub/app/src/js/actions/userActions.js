@@ -1,6 +1,7 @@
 import actionTypes from "../constants/index";
 import axios from "axios";
 import cookie from "js-cookie";
+import { toast } from "react-toastify";
 
 const addUser = (payload, ownProps) => {
   return dispatch => {
@@ -33,11 +34,11 @@ const loginUser = (payload, ownProps) => {
           }
         }
       }).catch(err => {
-        dispatch({ type: actionTypes.SET_INVALID, payload: {invalid: true} });
+        toast.error("Invalid credentials");
       })
   };
 };
-
+//TODO: test user update as code updated
 const updateUser = (payload) => {
     return dispatch => {
         return axios.put(`http://localhost:3001/user/update/${payload.id}`, payload)
@@ -45,11 +46,36 @@ const updateUser = (payload) => {
             if(response.status === 200) {
                 const userData = response.data.user;
                 userData.valid_update = true;
-                const restaurantData = response.data.restaurant;
                 dispatch({ type: actionTypes.SET_USER, payload: userData });
-                dispatch({ type: actionTypes.SET_RESTAURANT, payload: restaurantData });
+                if (userData.type === "Owner") {
+                  const restaurantData = response.data.restaurant;
+                  dispatch({ type: actionTypes.SET_RESTAURANT, payload: restaurantData });
+                }
+                toast.success("Updated");
             }
-        })
+        });
     }
 }
-export { addUser, loginUser, updateUser};
+
+const getUser = (payload) => {
+  return dispatch => {
+    return axios.get(`http://localhost:3001/user/get/${payload.user_id}`)
+    .then(response => {
+      if(response.status === 200) {
+        const userData = response.data;
+        dispatch({ type: actionTypes.SET_USER, payload: userData });
+    }
+    });
+  }
+}
+const uploadProfileImage = (payload) => {
+  return dispatch => {
+      return axios.post(`http://localhost:3001/user/upload/image`,payload)
+      .then(response => {
+          if(response.status === 200) {
+              dispatch({ type: actionTypes.SET_PROFILE_IMAGE, payload: response.data});
+          }
+      });
+  }
+}
+export { addUser, loginUser, updateUser, getUser, uploadProfileImage};

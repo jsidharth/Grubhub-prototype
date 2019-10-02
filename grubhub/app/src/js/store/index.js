@@ -1,5 +1,6 @@
 import { createStore, applyMiddleware, compose } from "redux";
-import {Redirect} from "react-router-dom";
+import * as storage from 'redux-storage';
+import createEngine from 'redux-storage-engine-localstorage';
 import rootReducer from "../reducers/index.js";
 import thunk from "redux-thunk";
 import axios from 'axios';
@@ -20,17 +21,24 @@ axios.interceptors.request.use( (config) => {
     return response
  }, 
  function (error) {
-  if (error.response.status === 401) {
-      window.location.href = "/signin"
-      return Promise.reject(error);
-  } else {
-    window.location.href = "/signin"
-    //TODO: ADD toaster for error
-  }
+  // if (error.response.status === 401) {
+  //     window.location.href = "/signin"
+  //     return Promise.reject(error);
+  // } else {
+  //   window.location.href = "/signin"
+  //   //TODO: ADD toaster for error
+  // }
   return Promise.reject(error);
 });
-const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-const store = createStore(rootReducer, storeEnhancers(applyMiddleware(thunk)));
+const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const reducer = storage.reducer(rootReducer);
+const engine = createEngine('my-save-key');
+const middleware = storage.createMiddleware(engine);
+const store = createStore(reducer, storeEnhancers(applyMiddleware(thunk, middleware)));
+const load = storage.createLoader(engine);
+load(store)
+  .then((newState) => console.log('Loaded state:', newState))
+  .catch(() => console.log('Failed to load previous state'));
 
 export default store;

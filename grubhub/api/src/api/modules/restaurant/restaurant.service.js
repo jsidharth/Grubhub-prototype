@@ -1,5 +1,6 @@
 import { Restaurants, Items, Items_Restaurant } from "../../../sequelize";
-import _ from 'lodash';
+import _ from "lodash";
+import Promise from 'bluebird';
 
 const createRestaurant = restaurantDetails => {
   return Restaurants.create({
@@ -24,20 +25,20 @@ const createRestaurant = restaurantDetails => {
   });
 };
 
-const getRestaurant = (user_id) => {
-    return Restaurants.findOne({
-        where: {
-            user_id
-        }
-    }).then(restaurant => {
-        if(!restaurant) {
-            return {}
-        }
-        return restaurant;
-    });
+const getRestaurant = user_id => {
+  return Restaurants.findOne({
+    where: {
+      user_id
+    }
+  }).then(restaurant => {
+    if (!restaurant) {
+      return {};
+    }
+    return restaurant;
+  });
 };
 
-const updateDetails = (restaurantDetails) => {
+const updateDetails = restaurantDetails => {
   return Restaurants.findOne({
     where: {
       id: restaurantDetails.id
@@ -70,14 +71,14 @@ const updateDetails = (restaurantDetails) => {
   });
 };
 
-const getRestaurantMenu = (restaurant_id) => {
+const getRestaurantMenu = restaurant_id => {
   return Restaurants.findOne({
     where: {
       id: restaurant_id
     }
   }).then(restaurant => {
-    if(!restaurant) {
-      throw new Error('No restaurant found');
+    if (!restaurant) {
+      throw new Error("No restaurant found");
     }
     return Items_Restaurant.findAll({
       where: {
@@ -92,26 +93,33 @@ const getRestaurantMenu = (restaurant_id) => {
         }
       ]
     }).then(allItems => {
-      if(!allItems || !allItems.length) {
+      if (!allItems || !allItems.length) {
         return [];
       }
-      const groupedItems = _.chain(allItems).map('item').groupBy('section').map((value, key) => ({
-        section: key,
-        items: value
-      })).flatten().value();
+      const groupedItems = _.chain(allItems)
+        .map("item")
+        .groupBy("section")
+        .map((value, key) => ({
+          section: key,
+          id: value[0].id,
+          items: value
+        }))
+        .flatten()
+        .sortBy(each => each.section.toLowerCase())
+        .value();
       return groupedItems;
-    })
-  })
-}
+    });
+  });
+};
 
-const getRestaurantDetails = (restaurant_id) => {
+const getRestaurantDetails = restaurant_id => {
   return Restaurants.findOne({
     where: {
       id: restaurant_id
     }
   }).then(restaurant => {
-    if(!restaurant) {
-      throw new Error('Restaurant not found');
+    if (!restaurant) {
+      throw new Error("Restaurant not found");
     }
     return getRestaurantMenu(restaurant_id).then(menu => {
       restaurant.dataValues.menu = menu;
@@ -120,6 +128,62 @@ const getRestaurantDetails = (restaurant_id) => {
       };
     });
   });
+};
+
+const updateSection = section => {
+  if(!section.items || !section.items.length) {
+    throw new Error('No items in section.')
+  }
+  return Promise.map(section.items, item => {
+    return Items.findOne({
+      where: {
+        id: item
+      }
+    }).then(currentItem => {
+      return currentItem.update({
+        section: section.updated_name
+      })
+    })
+  }).then(() => {
+    return getRestaurantMenu(section.restaurant_id);
+  }).catch(err => {
+    return ({
+      message: err
+    });
+  });
 }
 
-export { createRestaurant, updateDetails, getRestaurant, getRestaurantMenu, getRestaurantDetails};
+const deleteSection = section => {
+  if(!section.items || !section.items.length) {
+    throw new Error('No items in section.')
+  }
+  return Promise.map(section.items, item => {
+    return Items_Restaurant.destroy({
+      where: {
+        item_id: item
+      }
+    }).then(() => {
+      return Items.destroy({
+        where: {
+          id: item
+        }
+      });
+    });
+  }).then(() => {
+    return getRestaurantMenu(section.restaurant_id);
+  }).catch(err => {
+    return ({
+      message: err
+    });
+  });
+  
+}
+export {
+  createRestaurant,
+  updateDetails,
+  getRestaurant,
+  getRestaurantMenu,
+  getRestaurantDetails,
+  updateSection,
+  deleteSection
+};

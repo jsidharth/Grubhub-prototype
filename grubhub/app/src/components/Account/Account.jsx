@@ -1,10 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {userActions, ownerActions} from "./../../js/actions/index";
-import './style.css';
+import { userActions, ownerActions } from "./../../js/actions/index";
+import { ToastContainer } from "react-toastify";
+import { Container, Row, Col, Image } from "react-bootstrap";
+import Sidebar from "./../Sidebar/Sidebar";
+import Navigationbar from "./../Navigationbar/Navigationbar";
+import "./style.css";
 class Account extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       id: "",
       first_name: "",
@@ -20,42 +24,44 @@ class Account extends Component {
       restaurant_zipcode: "",
       restaurant_image: "",
       cuisine: "",
-      valid_update: ""
+      valid_update: "",
+      profile_pic_file: "Choose file",
+      restaurant_pic_file: "Choose file"
     };
   }
   componentDidMount() {
-      const {
-        id,
-        first_name,
-        last_name,
-        email,
-        phone,
-        type,
-        address,
-        image,
-      } = this.props.user;
-      if(type === "Owner") {
-        this.props.getRestaurant({
-          user_id: id
-        });
-      }
-      const restaurant = this.props.restaurant;
-      this.setState({
-        id,
-        first_name,
-        last_name,
-        email,
-        phone,
-        type,
-        address,
-        image,
-        restaurant_id: restaurant.id,
-        restaurant_name: restaurant.name,
-        restaurant_address: restaurant.address,
-        restaurant_zipcode: restaurant.zipcode,
-        restaurant_image: restaurant.image,
-        cuisine: restaurant.cuisine
+    const {
+      id,
+      first_name,
+      last_name,
+      email,
+      phone,
+      type,
+      address,
+      image
+    } = this.props.user;
+    if (type === "Owner") {
+      this.props.getRestaurant({
+        user_id: id
       });
+    }
+    const restaurant = this.props.restaurant;
+    this.setState({
+      id,
+      first_name,
+      last_name,
+      email,
+      phone,
+      type,
+      address,
+      image,
+      restaurant_id: restaurant.id,
+      restaurant_name: restaurant.name,
+      restaurant_address: restaurant.address,
+      restaurant_zipcode: restaurant.zipcode,
+      restaurant_image: restaurant.image,
+      cuisine: restaurant.cuisine
+    });
   }
   componentWillReceiveProps(nextProps) {
     const {
@@ -97,9 +103,21 @@ class Account extends Component {
     const payload = this.state;
     this.props.updateUser(payload);
   };
+  handleUpload = e => {
+    e.preventDefault();
+    const data = new FormData();
+    //TODO: add toaster for empty file
+    if (e.target.value === "profile_pic") {
+      data.append("file", this.uploadProfile.files[0] || "");
+      this.props.uploadProfileImage(data);
+    } else if (e.target.value === "restaurant_pic") {
+      data.append("file", this.uploadRestaurant.files[0] || "");
+      this.props.uploadRestaurantImage(data);
+    }
+  };
   render() {
-    const validUpdate = this.state.valid_update ? (<div><span>Updated Successfully</span></div>) : null;
-    return (
+    return (<div>
+      {this.state.type === 'Owner' ? (<Sidebar/>): (<Navigationbar/>)},
       <div className="container shadow p-2 account_info_form">
         <form onSubmit={e => this.handleUpdate(e)}>
           <div className="form-group">
@@ -110,7 +128,7 @@ class Account extends Component {
               id="first_name"
               placeholder="First Name"
               value={this.state.first_name}
-              onInput={this.handleChange}
+              onChange={this.handleChange}
             />
           </div>
           <div className="form-group">
@@ -121,7 +139,7 @@ class Account extends Component {
               id="last_name"
               placeholder="Last Name"
               value={this.state.last_name}
-              onInput={this.handleChange}
+              onChange={this.handleChange}
             />
           </div>
           <div className="form-group">
@@ -143,7 +161,7 @@ class Account extends Component {
               id="phone"
               placeholder="Phone"
               value={this.state.phone}
-              onInput={this.handleChange}
+              onChange={this.handleChange}
             />
           </div>
           <div className="form-group">
@@ -153,8 +171,59 @@ class Account extends Component {
               id="address"
               placeholder="Address"
               value={this.state.address}
-              onInput={this.handleChange}
+              onChange={this.handleChange}
             />
+          </div>
+          <div className="form-group image-upload">
+            <label htmlFor="image">Image</label>
+            <div className="custom-file">
+              <input
+                type="file"
+                className="custom-file-input"
+                id="file"
+                accept="image/*"
+                ref={ref => {
+                  this.uploadProfile = ref;
+                }}
+                aria-describedby="fileUpload"
+                onChange={e => {
+                  if (e.target.value) {
+                    let fileName = e.target.value.split("\\");
+                    this.setState({
+                      profile_pic_file:
+                        fileName && fileName.length
+                          ? fileName[fileName.length - 1]
+                          : "Choose file"
+                    });
+                  }
+                }}
+              />
+              <label
+                className="custom-file-label"
+                id="image-label"
+                htmlFor="file">
+                {this.state.profile_pic_file}
+              </label>
+            </div>
+            <div className="input-group-append">
+              <button
+                className="btn btn-outline-secondary m-2"
+                type="button"
+                id="fileUpload"
+                value="profile_pic"
+                onClick={this.handleUpload}>
+                Upload
+              </button>
+            </div>
+          </div>
+          <div className="form-group" style={{ width: "60rem" }}>
+            <Container>
+              <Row>
+                <Col xs={6} md={4}>
+                  <Image src={this.state.image} roundedCircle />
+                </Col>
+              </Row>
+            </Container>
           </div>
           {this.state.type === "Owner" ? (
             <div>
@@ -166,7 +235,7 @@ class Account extends Component {
                   id="restaurant_name"
                   placeholder="Name of your restaurant"
                   value={this.state.restaurant_name}
-                  onInput={this.handleChange}
+                  onChange={this.handleChange}
                 />
               </div>
               <div className="form-group">
@@ -177,7 +246,7 @@ class Account extends Component {
                   id="cuisine"
                   placeholder="Cusine"
                   value={this.state.cuisine}
-                  onInput={this.handleChange}
+                  onChange={this.handleChange}
                 />
               </div>
               <div className="form-group">
@@ -188,7 +257,7 @@ class Account extends Component {
                   id="restaurant_address"
                   placeholder="Restaurant Address"
                   value={this.state.restaurant_address}
-                  onInput={this.handleChange}
+                  onChange={this.handleChange}
                 />
               </div>
               <div className="form-group">
@@ -199,16 +268,68 @@ class Account extends Component {
                   id="restaurant_zipcode"
                   placeholder="Restaurant Zipcode"
                   value={this.state.restaurant_zipcode}
-                  onInput={this.handleChange}
+                  onChange={this.handleChange}
                 />
+              </div>
+              <div className="form-group image-upload">
+                <label htmlFor="image">Restaurant Image</label>
+                <div className="custom-file">
+                  <input
+                    type="file"
+                    className="custom-file-input"
+                    id="file"
+                    accept="image/*"
+                    ref={ref => {
+                      this.uploadRestaurant = ref;
+                    }}
+                    aria-describedby="fileUpload"
+                    onChange={e => {
+                      if (e.target.value) {
+                        let fileName = e.target.value.split("\\");
+                        this.setState({
+                          restaurant_pic_file:
+                            fileName && fileName.length
+                              ? fileName[fileName.length - 1]
+                              : "Choose file"
+                        });
+                      }
+                    }}
+                  />
+                  <label
+                    className="custom-file-label"
+                    id="image-label"
+                    htmlFor="file">
+                    {this.state.restaurant_pic_file}
+                  </label>
+                </div>
+                <div className="input-group-append">
+                  <button
+                    className="btn btn-outline-secondary m-2"
+                    type="button"
+                    id="fileUpload"
+                    value="restaurant_pic"
+                    onClick={this.handleUpload}>
+                    Upload
+                  </button>
+                </div>
+              </div>
+              <div className="form-group" style={{ width: "60rem" }}>
+                <Container>
+                  <Row>
+                    <Col xs={6} md={4}>
+                      <Image src={this.state.restaurant_image} rounded />
+                    </Col>
+                  </Row>
+                </Container>
               </div>
             </div>
           ) : null}
           <button type="submit" className="btn btn-primary m-3">
             Update
           </button>
-          {validUpdate}
         </form>
+        <ToastContainer autoClose={2000} />
+      </div>
       </div>
     );
   }
@@ -222,7 +343,9 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => ({
   updateUser: payload => dispatch(userActions.updateUser(payload)),
-  getRestaurant: payload => dispatch(ownerActions.getRestaurant(payload))
+  getRestaurant: payload => dispatch(ownerActions.getRestaurant(payload)),
+  uploadProfileImage: payload => dispatch(userActions.uploadProfileImage(payload)),
+  uploadRestaurantImage: payload => dispatch(ownerActions.uploadRestaurantImage(payload))
 });
 
 export default connect(

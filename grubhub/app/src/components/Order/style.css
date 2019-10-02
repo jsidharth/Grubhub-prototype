@@ -1,8 +1,7 @@
 .order-detail {
   margin-top: 1%;
   background: #f3f3f2;
-  margin-left: 1%;
-  margin-right: 1%;
+  width: 90%;
 }
 
 .order_detail_input {

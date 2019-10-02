@@ -68,19 +68,19 @@ const updateItem = (item_details) => {
         });
     });
 }
-//TODO: Test delete
+
 const deleteItem = (item_id) => {
-    return Items.destroy({
+    return Items_Restaurant.destroy({
         where: {
-            id: item_id
+            item_id
         }
     }).then(rows => {
         if(!rows) {
             throw new Error('Item not deleted')
         }
-        return Items_Restaurant.destroy({
+        return Items.destroy({
             where: {
-                item_id
+                id: item_id
             }
         }).then(rows => {
             if(!rows) {

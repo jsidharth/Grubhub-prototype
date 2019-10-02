@@ -8,7 +8,7 @@ class App extends React.Component {
     return (
       <BrowserRouter>
         <div className="custom-row">
-          <Route component={Sidebar}></Route>
+          {/* <Route component={Sidebar}></Route> */}
           <Main />
         </div>
       </BrowserRouter>

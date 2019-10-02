@@ -1,0 +1,10 @@
+.item_detail {
+    margin-top: 1%;
+  background: #f3f3f2;
+  width: 90%;
+}
+
+.image-upload{
+  flex-wrap: initial;
+  width: fit-content;
+}
