@@ -30,3 +30,9 @@
 .sidebar .list-group-item-light.list-group-item-action:focus a {
   color: black;
 }
+
+.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+}

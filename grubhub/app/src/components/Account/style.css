@@ -1,13 +1,12 @@
 .account_info_form {
-    margin-top: 1%;
-  background: #f3f3f2;
-  width: 90%;
+  width: 100%;
+  max-width: unset;
+  margin: 0;
+  padding: 30px 0 !important;
+  padding-left: 450px !important;
+  padding-right: 30px !important;
 }
 
-.first_name {
-    width: 30%
-}
-
-.last_name {
-    width: 30%
+.custom-form {
+  width: 500px;
 }

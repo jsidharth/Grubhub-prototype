@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { connect } from "react-redux";
-
+import cookie from "js-cookie";
 class Navigationbar extends Component {
   constructor() {
     super();
@@ -19,11 +19,18 @@ class Navigationbar extends Component {
       user: nextProps.user
     });
   }
+  handleSignout = e => {
+    e.preventDefault();
+    cookie.remove('token');
+    localStorage.clear();
+    window.location.href = '/signin';
+  };
   render() {
+    const redirect = `\\${this.state.user.id}\\search`
     return (
       <Navbar bg="light" expand="lg" className="fluid">
         {/* TODO REDIRECTION */}
-        <Navbar.Brand href="#home">
+        <Navbar.Brand href={redirect}>
           <img
             src="https://assets.grubhub.com/assets/img/grubhub/logo-full-primary.svg"
             width="110px"

@@ -1,48 +1,39 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { userActions, ownerActions } from "./../../js/actions/index";
-import { ToastContainer } from "react-toastify";
-import { Container, Row, Col, Image } from "react-bootstrap";
-import Sidebar from "./../Sidebar/Sidebar";
-import Navigationbar from "./../Navigationbar/Navigationbar";
-import "./style.css";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { userActions, ownerActions } from './../../js/actions/index';
+import { ToastContainer, toast } from 'react-toastify';
+import { Container, Row, Col, Image } from 'react-bootstrap';
+import Sidebar from './../Sidebar/Sidebar';
+import Navigationbar from './../Navigationbar/Navigationbar';
+import './style.css';
 class Account extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      id: "",
-      first_name: "",
-      last_name: "",
-      email: "",
-      phone: "",
-      type: "",
-      address: "",
-      image: "",
-      restaurant_id: "",
-      restaurant_name: "",
-      restaurant_address: "",
-      restaurant_zipcode: "",
-      restaurant_image: "",
-      cuisine: "",
-      valid_update: "",
-      profile_pic_file: "Choose file",
-      restaurant_pic_file: "Choose file"
+      id: '',
+      first_name: '',
+      last_name: '',
+      email: '',
+      phone: '',
+      type: '',
+      address: '',
+      image: '',
+      restaurant_id: '',
+      restaurant_name: '',
+      restaurant_address: '',
+      restaurant_zipcode: '',
+      restaurant_image: '',
+      cuisine: '',
+      valid_update: '',
+      profile_pic_file: 'Choose file',
+      restaurant_pic_file: 'Choose file',
     };
   }
   componentDidMount() {
-    const {
-      id,
-      first_name,
-      last_name,
-      email,
-      phone,
-      type,
-      address,
-      image
-    } = this.props.user;
-    if (type === "Owner") {
+    const { id, first_name, last_name, email, phone, type, address, image } = this.props.user;
+    if (type === 'Owner') {
       this.props.getRestaurant({
-        user_id: id
+        user_id: id,
       });
     }
     const restaurant = this.props.restaurant;
@@ -60,20 +51,11 @@ class Account extends Component {
       restaurant_address: restaurant.address,
       restaurant_zipcode: restaurant.zipcode,
       restaurant_image: restaurant.image,
-      cuisine: restaurant.cuisine
+      cuisine: restaurant.cuisine,
     });
   }
   componentWillReceiveProps(nextProps) {
-    const {
-      id,
-      first_name,
-      last_name,
-      email,
-      phone,
-      type,
-      address,
-      image
-    } = nextProps.user;
+    const { id, first_name, last_name, email, phone, type, address, image } = nextProps.user;
     const restaurant = nextProps.restaurant;
     this.setState({
       id,
@@ -90,12 +72,12 @@ class Account extends Component {
       restaurant_zipcode: restaurant.zipcode,
       restaurant_image: restaurant.image,
       cuisine: restaurant.cuisine,
-      valid_update: nextProps.valid_update
+      valid_update: nextProps.valid_update,
     });
   }
   handleChange = e => {
     this.setState({
-      [e.target.id]: e.target.value
+      [e.target.id]: e.target.value,
     });
   };
   handleUpdate = e => {
@@ -107,229 +89,235 @@ class Account extends Component {
     e.preventDefault();
     const data = new FormData();
     //TODO: add toaster for empty file
-    if (e.target.value === "profile_pic") {
-      data.append("file", this.uploadProfile.files[0] || "");
-      this.props.uploadProfileImage(data);
-    } else if (e.target.value === "restaurant_pic") {
-      data.append("file", this.uploadRestaurant.files[0] || "");
-      this.props.uploadRestaurantImage(data);
+    if (e.target.value === 'profile_pic') {
+      if(this.uploadProfile.files && this.uploadProfile.files.length) {
+        data.append('file', this.uploadProfile.files[0] || '');
+        this.props.uploadProfileImage(data);
+      } else {
+        toast.warning("No file selected!");
+      }
+    } else if (e.target.value === 'restaurant_pic') {
+      if(this.uploadRestaurant.files && this.uploadRestaurant.files.length) {
+        data.append('file', this.uploadRestaurant.files[0] || '');
+        this.props.uploadRestaurantImage(data);
+      } else {
+        toast.warning("No file selected!");
+      }
     }
   };
   render() {
-    return (<div>
-      {this.state.type === 'Owner' ? (<Sidebar/>): (<Navigationbar/>)},
-      <div className="container shadow p-2 account_info_form">
-        <form onSubmit={e => this.handleUpdate(e)}>
-          <div className="form-group">
-            <label htmlFor="firstName">First Name</label>
-            <input
-              type="text"
-              className="form-control first_name"
-              id="first_name"
-              placeholder="First Name"
-              value={this.state.first_name}
-              onChange={this.handleChange}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="lastName">Last Name</label>
-            <input
-              type="text"
-              className="form-control last_name"
-              id="last_name"
-              placeholder="Last Name"
-              value={this.state.last_name}
-              onChange={this.handleChange}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="email">Email address</label>
-            <input
-              type="email"
-              className="form-control email"
-              id="email"
-              aria-describedby="emailHelp"
-              placeholder="Enter email"
-              defaultValue={this.state.email}
-              readOnly></input>
-          </div>
-          <div className="form-group">
-            <label htmlFor="phone">Phone</label>
-            <input
-              type="text"
-              className="form-control"
-              id="phone"
-              placeholder="Phone"
-              value={this.state.phone}
-              onChange={this.handleChange}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="address">Address</label>
-            <textarea
-              className="form-control"
-              id="address"
-              placeholder="Address"
-              value={this.state.address}
-              onChange={this.handleChange}
-            />
-          </div>
-          <div className="form-group image-upload">
-            <label htmlFor="image">Image</label>
-            <div className="custom-file">
+    return (
+      <div>
+        {this.state.type === 'Owner' ? <Sidebar /> : <Navigationbar />}
+        <div className="container shadow p-2 account_info_form">
+          <form onSubmit={e => this.handleUpdate(e)} className="custom-form">
+            <div className="form-group">
+              <label htmlFor="firstName">First Name</label>
               <input
-                type="file"
-                className="custom-file-input"
-                id="file"
-                accept="image/*"
-                ref={ref => {
-                  this.uploadProfile = ref;
-                }}
-                aria-describedby="fileUpload"
-                onChange={e => {
-                  if (e.target.value) {
-                    let fileName = e.target.value.split("\\");
-                    this.setState({
-                      profile_pic_file:
-                        fileName && fileName.length
-                          ? fileName[fileName.length - 1]
-                          : "Choose file"
-                    });
-                  }
-                }}
+                type="text"
+                className="form-control first_name"
+                id="first_name"
+                placeholder="First Name"
+                value={this.state.first_name}
+                onChange={this.handleChange}
               />
-              <label
-                className="custom-file-label"
-                id="image-label"
-                htmlFor="file">
-                {this.state.profile_pic_file}
-              </label>
             </div>
-            <div className="input-group-append">
-              <button
-                className="btn btn-outline-secondary m-2"
-                type="button"
-                id="fileUpload"
-                value="profile_pic"
-                onClick={this.handleUpload}>
-                Upload
-              </button>
+            <div className="form-group">
+              <label htmlFor="lastName">Last Name</label>
+              <input
+                type="text"
+                className="form-control last_name"
+                id="last_name"
+                placeholder="Last Name"
+                value={this.state.last_name}
+                onChange={this.handleChange}
+              />
             </div>
-          </div>
-          <div className="form-group" style={{ width: "60rem" }}>
-            <Container>
-              <Row>
-                <Col xs={6} md={4}>
-                  <Image src={this.state.image} roundedCircle />
-                </Col>
-              </Row>
-            </Container>
-          </div>
-          {this.state.type === "Owner" ? (
-            <div>
-              <div className="form-group">
-                <label htmlFor="restaurant_name">Restaurant Name</label>
+            <div className="form-group">
+              <label htmlFor="email">Email address</label>
+              <input
+                type="email"
+                className="form-control email"
+                id="email"
+                aria-describedby="emailHelp"
+                placeholder="Enter email"
+                defaultValue={this.state.email}
+                readOnly
+              ></input>
+            </div>
+            <div className="form-group">
+              <label htmlFor="phone">Phone</label>
+              <input
+                type="text"
+                className="form-control"
+                id="phone"
+                placeholder="Phone"
+                value={this.state.phone}
+                onChange={this.handleChange}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="address">Address</label>
+              <textarea
+                className="form-control"
+                id="address"
+                placeholder="Address"
+                value={this.state.address}
+                onChange={this.handleChange}
+              />
+            </div>
+            <div className="form-group image-upload">
+              <label htmlFor="image">Image</label>
+              <div className="custom-file">
                 <input
-                  type="text"
-                  className="form-control"
-                  id="restaurant_name"
-                  placeholder="Name of your restaurant"
-                  value={this.state.restaurant_name}
-                  onChange={this.handleChange}
+                  type="file"
+                  className="custom-file-input"
+                  id="file"
+                  accept="image/*"
+                  ref={ref => {
+                    this.uploadProfile = ref;
+                  }}
+                  aria-describedby="fileUpload"
+                  onChange={e => {
+                    if (e.target.value) {
+                      let fileName = e.target.value.split('\\');
+                      this.setState({
+                        profile_pic_file:
+                          fileName && fileName.length
+                            ? fileName[fileName.length - 1]
+                            : 'Choose file',
+                      });
+                    }
+                  }}
                 />
+                <label className="custom-file-label" id="image-label" htmlFor="file">
+                  {this.state.profile_pic_file}
+                </label>
               </div>
-              <div className="form-group">
-                <label htmlFor="cuisine">Cusine</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="cuisine"
-                  placeholder="Cusine"
-                  value={this.state.cuisine}
-                  onChange={this.handleChange}
-                />
+              <div className="input-group-append">
+                <button
+                  className="btn btn-outline-secondary m-2"
+                  type="button"
+                  id="fileUpload"
+                  value="profile_pic"
+                  onClick={this.handleUpload}
+                >
+                  Upload
+                </button>
               </div>
-              <div className="form-group">
-                <label htmlFor="cuisine">Restaurant Address</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="restaurant_address"
-                  placeholder="Restaurant Address"
-                  value={this.state.restaurant_address}
-                  onChange={this.handleChange}
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="cuisine">Restaurant Zipcode</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="restaurant_zipcode"
-                  placeholder="Restaurant Zipcode"
-                  value={this.state.restaurant_zipcode}
-                  onChange={this.handleChange}
-                />
-              </div>
-              <div className="form-group image-upload">
-                <label htmlFor="image">Restaurant Image</label>
-                <div className="custom-file">
+            </div>
+            <div className="form-group" style={{ width: '60rem' }}>
+              <Container>
+                <Row>
+                  <Col xs={6} md={4}>
+                    <Image src={this.state.image} roundedCircle />
+                  </Col>
+                </Row>
+              </Container>
+            </div>
+            {this.state.type === 'Owner' ? (
+              <div>
+                <div className="form-group">
+                  <label htmlFor="restaurant_name">Restaurant Name</label>
                   <input
-                    type="file"
-                    className="custom-file-input"
-                    id="file"
-                    accept="image/*"
-                    ref={ref => {
-                      this.uploadRestaurant = ref;
-                    }}
-                    aria-describedby="fileUpload"
-                    onChange={e => {
-                      if (e.target.value) {
-                        let fileName = e.target.value.split("\\");
-                        this.setState({
-                          restaurant_pic_file:
-                            fileName && fileName.length
-                              ? fileName[fileName.length - 1]
-                              : "Choose file"
-                        });
-                      }
-                    }}
+                    type="text"
+                    className="form-control"
+                    id="restaurant_name"
+                    placeholder="Name of your restaurant"
+                    value={this.state.restaurant_name}
+                    onChange={this.handleChange}
                   />
-                  <label
-                    className="custom-file-label"
-                    id="image-label"
-                    htmlFor="file">
-                    {this.state.restaurant_pic_file}
-                  </label>
                 </div>
-                <div className="input-group-append">
-                  <button
-                    className="btn btn-outline-secondary m-2"
-                    type="button"
-                    id="fileUpload"
-                    value="restaurant_pic"
-                    onClick={this.handleUpload}>
-                    Upload
-                  </button>
+                <div className="form-group">
+                  <label htmlFor="cuisine">Cusine</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="cuisine"
+                    placeholder="Cusine"
+                    value={this.state.cuisine}
+                    onChange={this.handleChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="cuisine">Restaurant Address</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="restaurant_address"
+                    placeholder="Restaurant Address"
+                    value={this.state.restaurant_address}
+                    onChange={this.handleChange}
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="cuisine">Restaurant Zipcode</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="restaurant_zipcode"
+                    placeholder="Restaurant Zipcode"
+                    value={this.state.restaurant_zipcode}
+                    onChange={this.handleChange}
+                  />
+                </div>
+                <div className="form-group image-upload">
+                  <label htmlFor="image">Restaurant Image</label>
+                  <div className="custom-file">
+                    <input
+                      type="file"
+                      className="custom-file-input"
+                      id="file"
+                      accept="image/*"
+                      ref={ref => {
+                        this.uploadRestaurant = ref;
+                      }}
+                      aria-describedby="fileUpload"
+                      onChange={e => {
+                        if (e.target.value) {
+                          let fileName = e.target.value.split('\\');
+                          this.setState({
+                            restaurant_pic_file:
+                              fileName && fileName.length
+                                ? fileName[fileName.length - 1]
+                                : 'Choose file',
+                          });
+                        }
+                      }}
+                    />
+                    <label className="custom-file-label" id="image-label" htmlFor="file">
+                      {this.state.restaurant_pic_file}
+                    </label>
+                  </div>
+                  <div className="input-group-append">
+                    <button
+                      className="btn btn-outline-secondary m-2"
+                      type="button"
+                      id="fileUpload"
+                      value="restaurant_pic"
+                      onClick={this.handleUpload}
+                    >
+                      Upload
+                    </button>
+                  </div>
+                </div>
+                <div className="form-group" style={{ width: '60rem' }}>
+                  <Container>
+                    <Row>
+                      <Col xs={6} md={4}>
+                        <Image src={this.state.restaurant_image} rounded />
+                      </Col>
+                    </Row>
+                  </Container>
                 </div>
               </div>
-              <div className="form-group" style={{ width: "60rem" }}>
-                <Container>
-                  <Row>
-                    <Col xs={6} md={4}>
-                      <Image src={this.state.restaurant_image} rounded />
-                    </Col>
-                  </Row>
-                </Container>
-              </div>
-            </div>
-          ) : null}
-          <button type="submit" className="btn btn-primary m-3">
-            Update
-          </button>
-        </form>
-        <ToastContainer autoClose={2000} />
-      </div>
+            ) : null}
+            <button type="submit" className="btn btn-primary m-3">
+              Update
+            </button>
+          </form>
+          <ToastContainer autoClose={2000} />
+        </div>
       </div>
     );
   }
@@ -338,17 +326,17 @@ const mapStateToProps = state => {
   return {
     user: state.user,
     restaurant: state.restaurant,
-    valid_update: state.user.valid_update
+    valid_update: state.user.valid_update,
   };
 };
 const mapDispatchToProps = dispatch => ({
   updateUser: payload => dispatch(userActions.updateUser(payload)),
   getRestaurant: payload => dispatch(ownerActions.getRestaurant(payload)),
   uploadProfileImage: payload => dispatch(userActions.uploadProfileImage(payload)),
-  uploadRestaurantImage: payload => dispatch(ownerActions.uploadRestaurantImage(payload))
+  uploadRestaurantImage: payload => dispatch(ownerActions.uploadRestaurantImage(payload)),
 });
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(Account);

@@ -5,6 +5,8 @@ import cellEditFactory, { Type } from "react-bootstrap-table2-editor";
 import BootstrapTable from "react-bootstrap-table-next";
 import { ownerActions, userActions } from "../../js/actions/index";
 import { Link } from "react-router-dom";
+import Sidebar from './../Sidebar/Sidebar';
+import Navigationbar from './../Navigationbar/Navigationbar';
 class Order extends Component {
   constructor(props) {
     super(props);
@@ -74,12 +76,11 @@ class Order extends Component {
       this.props.getRestaurantOrders({
         id: this.props.restaurant.id
       });
-    } else if (this.props.user.type === "Customer"){
+    } else if (this.props.user.type === "Customer") {
       this.props.getCustomerOrders({
         id: this.props.match.params.id
       });
     }
-    
   }
 
   componentWillReceiveProps(nextProps) {
@@ -130,51 +131,50 @@ class Order extends Component {
 
   render() {
     return (
-      <div>
-        <div>
-          <label className="col-sm-2 col-form-label col-form-label-lg">
-            Current Orders
-          </label>
-        </div>
-        {this.props.user.type === "Owner" ? (
+      <div >
+        {this.props.user.type === "Owner" ? <Sidebar /> : <Navigationbar />}
+        <div className="order_list">
           <div>
-            <BootstrapTable
-              keyField="id"
-              data={this.state.current_orders}
-              columns={this.state.current_order_columns}
-              bordered={true}
-              cellEdit={cellEditFactory({
-                mode: "click",
-                blurToSave: true,
-                afterSaveCell: (oldValue, newValue, row) => {
-                  this.afterSaveCell(oldValue, newValue, row);
-                }
-              })}
-            />
+          <h3>Current Orders</h3>
           </div>
-        ) : (
-          <div>
-            <BootstrapTable
-              keyField="id"
-              data={this.state.current_orders}
-              columns={this.state.current_order_columns}
-              bordered={true}
-            />
-          </div>
-        )}
+          {this.props.user.type === "Owner" ? (
+            <div>
+              <BootstrapTable
+                keyField="id"
+                data={this.state.current_orders}
+                columns={this.state.current_order_columns}
+                bordered={true}
+                cellEdit={cellEditFactory({
+                  mode: "click",
+                  blurToSave: true,
+                  afterSaveCell: (oldValue, newValue, row) => {
+                    this.afterSaveCell(oldValue, newValue, row);
+                  }
+                })}
+              />
+            </div>
+          ) : (
+            <div>
+              <BootstrapTable
+                keyField="id"
+                data={this.state.current_orders}
+                columns={this.state.current_order_columns}
+                bordered={true}
+              />
+            </div>
+          )}
 
-        <div>
-          <label className="col-sm-2 col-form-label col-form-label-lg">
-            Past Orders
-          </label>
-        </div>
-        <div>
-          <BootstrapTable
-            keyField="id"
-            data={this.state.past_orders}
-            columns={this.state.past_orders_coloumns}
-            bordered={true}
-          />
+          <div>
+          <h3>Past Orders</h3>
+          </div>
+          <div>
+            <BootstrapTable
+              keyField="id"
+              data={this.state.past_orders}
+              columns={this.state.past_orders_coloumns}
+              bordered={true}
+            />
+          </div>
         </div>
       </div>
     );

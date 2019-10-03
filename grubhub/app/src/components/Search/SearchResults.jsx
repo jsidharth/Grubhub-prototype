@@ -5,6 +5,7 @@ import _ from 'lodash';
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import filterFactory, { selectFilter } from 'react-bootstrap-table2-filter';
 import BootstrapTable from "react-bootstrap-table-next";
+import Navigationbar from "../Navigationbar/Navigationbar";
 
 class SearchResults extends Component {
   constructor(props) {
@@ -58,6 +59,7 @@ class SearchResults extends Component {
   render() {
     return (
         <div>
+          <Navigationbar/>
         {this.state.search_results && this.state.search_results.length ? (<div className="container">
         <BootstrapTable
           keyField="id"

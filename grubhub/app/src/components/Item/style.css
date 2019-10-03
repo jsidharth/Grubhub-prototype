@@ -1,7 +1,11 @@
 .item_detail {
-    margin-top: 1%;
-  background: #f3f3f2;
+  margin-top: 10%;
   width: 90%;
+  max-width: unset;
+  margin: 0;
+  padding: 30px 0 !important;
+  padding-left: 330px !important;
+  padding-right: 30px !important;
 }
 
 .image-upload{

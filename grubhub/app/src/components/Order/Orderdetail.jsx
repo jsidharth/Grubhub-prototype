@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import { ownerActions } from "../../js/actions";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import BootstrapTable from "react-bootstrap-table-next";
+import Sidebar from './../Sidebar/Sidebar';
+import Navigationbar from './../Navigationbar/Navigationbar';
 import './style.css';
 const columns = [
   {
@@ -55,7 +57,9 @@ class Orderdetail extends Component {
   }
   render() {
     return (
-      <div className="container shadow p-3 order-detail">
+      <div>
+        {this.props.user.type === 'Owner' ? <Sidebar/> : <Navigationbar />}
+      <div className="container p-2 order-detail">
         <form>
           <div className="form-group row">
             <label htmlFor="orderId" className="col-sm-2 col-form-label col-form-label-lg">
@@ -136,12 +140,14 @@ class Orderdetail extends Component {
           </div>
         </form>
       </div>
+      </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  order: state.order.active
+  order: state.order.active,
+  user: state.user
 });
 const mapDispatchToProps = dispatch => ({
   getOrderDetail: payload => dispatch(ownerActions.getOrderDetail(payload))
