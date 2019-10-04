@@ -18,7 +18,9 @@ userRouter.post("/register", passport.authenticate("register"), (req, res) => {
       res.status(200).json(result);
     })
     .catch(err => {
-      res.status(500).json(err);
+      res.status(500).json({
+          message: err.message
+      });
     });
 });
 
@@ -30,7 +32,9 @@ userRouter.post("/login", passport.authenticate("login"), (req, res) => {
       res.status(200).json(result);
     })
     .catch(err => {
-      res.status(500).json(err);
+      res.status(500).json({
+          message: err.message
+      });
     });
 });
 
@@ -43,7 +47,9 @@ userRouter.put("/update/:user_id", passport.authenticate("jwt"), (req, res) => {
       res.status(200).json(result);
     })
     .catch(err => {
-      res.status(500).json(err);
+      res.status(500).json({
+          message: err.message
+      });
     });
 });
 //TODO: add jwt auth
@@ -59,7 +65,9 @@ userRouter.post("/upload/image", multerUploads, cloudinaryConfig, (req, res) => 
   userService.uploadImage(file).then(result => {
     res.status(200).json(result);
   }).catch(err => {
-    res.status(500).json(err);
+    res.status(500).json({
+          message: err.message
+      });
   });
 });
 
@@ -67,7 +75,9 @@ userRouter.get("/get/:id", (req,res) => {
   userService.getUser(req.params.id).then(result => {
     res.status(200).json(result);
   }).catch(err => {
-    res.status(500).json(err);
+    res.status(500).json({
+          message: err.message
+      });
   });
 });
 

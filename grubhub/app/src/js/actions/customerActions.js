@@ -1,5 +1,6 @@
 import actionTypes from "../constants/index";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const getSearchResults = (payload, ownProps) => {
   return dispatch => {
@@ -50,8 +51,8 @@ const placeOrder = (payload, ownProps) => {
       .then(response => {
         if (response.status === 200) {
           dispatch({ type: actionTypes.CLEAR_CART, payload: response.data });
-          console.log(ownProps.history);
           ownProps.history.replace(`/${payload.user_id}/order`);
+          toast.success('Order placed!')
         }
       });
   };

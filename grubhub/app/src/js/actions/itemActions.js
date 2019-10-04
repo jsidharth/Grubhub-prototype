@@ -10,6 +10,7 @@ const addItem = payload => {
         if (response.status === 200) {
           dispatch({ type: actionTypes.SET_ITEM, payload: response.data });
         }
+        toast.success("Added to menu!");
       });
   };
 };
@@ -33,6 +34,7 @@ const updateItem = payload => {
         if (response.status === 200) {
           dispatch({ type: actionTypes.SET_ITEM, payload: response.data });
         }
+        toast.success("Updated!");
       });
   };
 };
@@ -45,6 +47,7 @@ const deleteItem = (payload, ownProps) => {
         if (response.status === 200) {
           dispatch({ type: actionTypes.CLEAR_ITEM, payload: {} });
           ownProps.history.push(`/${payload.userid}/menu`);
+          toast.success("Deleted!");
         }
       });
   };
@@ -60,6 +63,7 @@ const uploadImage = payload => {
             type: actionTypes.SET_ITEM_IMAGE,
             payload: response.data
           });
+          toast.success("Uploaded");
         }
       });
   };

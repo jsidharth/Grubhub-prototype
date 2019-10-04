@@ -5,6 +5,7 @@ import { Container, Row, Card, Form, Col } from "react-bootstrap";
 import _ from "lodash";
 import Navigationbar from "../Navigationbar/Navigationbar";
 import "./style.css";
+import { ToastContainer, toast } from "react-toastify";
 
 class Restaurant extends Component {
   constructor(props) {
@@ -24,14 +25,17 @@ class Restaurant extends Component {
   }
   componentDidMount() {
     //Load data on page load
+    console.log('Here', this.props.match.params.restaurant_id)
     this.props.getRestaurantDetails({
       restaurant_id: this.props.match.params.restaurant_id
     });
   }
   componentWillReceiveProps(nextProps) {
+    console.log('Here', nextProps)
     if (nextProps.current_restaurant) {
       this.setState({
-        current_restaurant: nextProps.current_restaurant
+        current_restaurant: nextProps.current_restaurant,
+        cart: nextProps.cart
       });
     }
   }
@@ -56,7 +60,14 @@ class Restaurant extends Component {
       .value();
     if (items && items.length) {
       const cart = items.map(item => {
-        if (this.state.cart[item.id] && this.state.cart[item.id] !== 0) {
+        if (this.state.cart[item.id] && parseInt(this.state.cart[item.id]) !== 0) {
+          return {
+            id: item.id,
+            name: item.name,
+            quantity: this.state.cart[item.id],
+            rate: item.rate ? item.rate * this.state.cart[item.id] : 0
+          };
+        } else if(parseInt(this.state.cart[item.id]) === 0) {
           return {
             id: item.id,
             name: item.name,
@@ -65,9 +76,13 @@ class Restaurant extends Component {
           };
         }
       });
-      this.props.addToCart({
-        cart: _.compact(cart)
-      });
+      if(_.compact(cart) && _.compact(cart).length) {
+        console.log(_.chain(cart).compact().filter(item => item.rate!==0).value())
+        this.props.addToCart({
+          cart : _.chain(cart).compact().filter('rate').value()
+        });
+        toast.success('Added to cart!');
+      }
     }
   };
   render() {
@@ -91,7 +106,16 @@ class Restaurant extends Component {
         </div>
         <div className="restaurant-detail">
           <div className="container">
-            <h3 className="menu">MENU</h3>
+            <div className="menu">
+            <Container>
+              <Row>
+                <Col sm={8}><h3 >MENU</h3></Col>
+                <Col sm={4}><button className="btn btn-primary" onClick={this.handleAddToCart}>Add to Cart</button></Col>
+              </Row>
+            
+            </Container>
+            </div>
+            
             {current_restaurant.menu && current_restaurant.menu.length
               ? current_restaurant.menu.map(eachSection => {
                   return (
@@ -102,7 +126,7 @@ class Restaurant extends Component {
                           <Row>
                             {eachSection.items.map(item => {
                               return (
-                                <div className="m-2">
+                                <div className="m-2" key={item.id}>
                                   <Card
                                     style={{ width: "14rem" }}
                                     key={item.id}>
@@ -143,12 +167,14 @@ class Restaurant extends Component {
               : null}
           </div>
         </div>
+        <ToastContainer autoClose={2000} />
       </div>
     );
   }
 }
 const mapStateToProps = state => ({
-  current_restaurant: state.customer.current_restaurant
+  current_restaurant: state.customer.current_restaurant,
+  cart: state.customer.cart
 });
 const mapDispatchToProps = dispatch => ({
   getRestaurantDetails: payload =>

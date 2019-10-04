@@ -44,6 +44,9 @@ const updateDetails = restaurantDetails => {
       id: restaurantDetails.id
     }
   }).then(restaurant => {
+    if(!restaurant) {
+      throw new Error('No restaurant found');
+    }
     return restaurant
       .update({
         name: restaurantDetails.restaurant_name,

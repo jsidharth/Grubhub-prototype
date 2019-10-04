@@ -1,5 +1,6 @@
 import actionTypes from "../constants/index";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const getRestaurant = payload => {
   return dispatch => {
@@ -103,6 +104,7 @@ const editSection = payload => {
             type: actionTypes.SET_MENU,
             payload: { menu: response.data }
           });
+          toast.success("Updated");
         }
       });
   };
@@ -118,6 +120,7 @@ const deleteSection = payload => {
             type: actionTypes.SET_MENU,
             payload: { menu: response.data }
           });
+          toast.success("Deleted");
         }
       });
   };
@@ -133,6 +136,7 @@ const uploadRestaurantImage = payload => {
             type: actionTypes.SET_RESTAURANT_IMAGE,
             payload: response.data
           });
+          toast.success("Uploaded");
         }
       });
   };

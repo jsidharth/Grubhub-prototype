@@ -8,6 +8,7 @@ import empty from "./../../assets/cart-empty.svg";
 import { Image } from "react-bootstrap";
 import "./style.css";
 import Navigationbar from "../Navigationbar/Navigationbar";
+import { ToastContainer } from 'react-toastify';
 
 class Cart extends Component {
   constructor() {
@@ -106,6 +107,7 @@ class Cart extends Component {
             </div>
           )}
         </div>
+        <ToastContainer autoClose={2000} />
       </div>
     );
   }

@@ -5,6 +5,7 @@ import rootReducer from "../reducers/index.js";
 import thunk from "redux-thunk";
 import axios from 'axios';
 import cookie from 'js-cookie';
+import {toast} from 'react-toastify';
 
 axios.interceptors.request.use( (config) => {
     const token = cookie.get('token');
@@ -18,16 +19,16 @@ axios.interceptors.request.use( (config) => {
   });
 
   axios.interceptors.response.use((response) => {
-    return response
+      return response;
  }, 
  function (error) {
-  // if (error.response.status === 401) {
-  //     window.location.href = "/signin"
-  //     return Promise.reject(error);
-  // } else {
-  //   window.location.href = "/signin"
-  //   //TODO: ADD toaster for error
-  // }
+  if (error.response.status === 401) {
+      window.location.href = "/signin"
+      toast.error('Unauthorized!');
+  } else if(error.response.status === 500) {
+      const msg = error.response.data.message ? error.response.data.message : 'Oops! Something went wrong!';
+      toast.error(msg);
+  }
   return Promise.reject(error);
 });
 

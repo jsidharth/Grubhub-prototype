@@ -84,6 +84,7 @@ const uploadProfileImage = payload => {
             type: actionTypes.SET_PROFILE_IMAGE,
             payload: response.data
           });
+          toast.success("Uploaded");
         }
       });
   };

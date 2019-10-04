@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { Container, Row, Card } from 'react-bootstrap';
 import './style.css';
 import Sidebar from '../Sidebar/Sidebar';
+import { ToastContainer, toast } from 'react-toastify';
 class OwnerMenu extends Component {
   constructor() {
     super();
@@ -50,16 +51,14 @@ class OwnerMenu extends Component {
     const current_section = _.find(this.state.sections, {
       id: parseInt(e.currentTarget.value),
     });
-    if (current_section.updated_name) {
-      current_section.restaurant_id = this.props.restaurant.id;
-      if (e.currentTarget.name === 'edit') {
+    if (current_section.updated_name && e.currentTarget.name === 'edit') {
+        current_section.restaurant_id = this.props.restaurant.id;
         this.props.editSection(current_section);
       } else if (e.currentTarget.name === 'delete') {
+        current_section.restaurant_id = this.props.restaurant.id;
         this.props.deleteSection(current_section);
-      }
-    } else {
-      //TODO: Add toaster
-      console.log('Section blank');
+      } else {
+        toast.warning('Oops! No update!')
     }
   };
   render() {
@@ -148,6 +147,7 @@ class OwnerMenu extends Component {
             : null}
         </div>
       </Container>
+      <ToastContainer autoClose={2000} />
       </div>
     );
   }

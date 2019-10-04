@@ -7,6 +7,7 @@ import { ownerActions, userActions } from "../../js/actions/index";
 import { Link } from "react-router-dom";
 import Sidebar from './../Sidebar/Sidebar';
 import Navigationbar from './../Navigationbar/Navigationbar';
+import { ToastContainer, toast } from 'react-toastify';
 class Order extends Component {
   constructor(props) {
     super(props);
@@ -176,6 +177,7 @@ class Order extends Component {
             />
           </div>
         </div>
+        <ToastContainer autoClose={2000} />
       </div>
     );
   }
