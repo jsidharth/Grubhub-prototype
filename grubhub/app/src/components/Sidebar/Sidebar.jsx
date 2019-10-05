@@ -60,7 +60,7 @@ class Sidebar extends Component {
           <ListGroup variant="flush">
             <ListGroup.Item variant="light">
               <Navbar.Brand>
-                <NavLink to={'/'}>Grubhub</NavLink>
+                <NavLink to={`/${userId}/account`}>Grubhub</NavLink>
               </Navbar.Brand>
               <button type="button" onClick={this.handleSignout} className="btn btn-outline-dark">
                 Sign Out

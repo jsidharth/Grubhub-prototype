@@ -4,7 +4,7 @@
   "description": "Grubhub API",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --recursive './test/*.js' --require esm --exit",
     "debug": "nodemon -r esm --inspect-brk --inspect=0.0.0.0:9229 ./src/app.js",
     "start": "nodemon -r esm ./src/app.js  "
   },
@@ -30,5 +30,10 @@
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
     "sequelize": "^5.18.4"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "mocha": "^6.2.1"
   }
 }

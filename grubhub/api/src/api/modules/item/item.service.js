@@ -95,7 +95,6 @@ const deleteItem = (item_id) => {
 
 const searchItems = (search_key) => {
     search_key = `%${search_key}%`;
-    console.log('Here', search_key)
     return Items.findAll({
         where: {
             name: {

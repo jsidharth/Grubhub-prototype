@@ -11,10 +11,6 @@ userRouter.post("/register", passport.authenticate("register"), (req, res) => {
   return userService
     .registerUser(userDetails)
     .then(result => {
-      res.cookie("grubhubCookie", result.token, {
-        maxAge: 900000,
-        httpOnly: false
-      });
       res.status(200).json(result);
     })
     .catch(err => {
@@ -71,7 +67,7 @@ userRouter.post("/upload/image", multerUploads, cloudinaryConfig, (req, res) => 
   });
 });
 
-userRouter.get("/get/:id", (req,res) => {
+userRouter.get("/getdetails/:id", (req,res) => {
   userService.getUser(req.params.id).then(result => {
     res.status(200).json(result);
   }).catch(err => {

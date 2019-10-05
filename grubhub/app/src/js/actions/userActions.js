@@ -65,7 +65,7 @@ const updateUser = payload => {
 const getUser = payload => {
   return dispatch => {
     return axios
-      .get(`http://localhost:3001/user/get/${payload.user_id}`)
+      .get(`http://localhost:3001/user/getdetails/${payload.user_id}`)
       .then(response => {
         if (response.status === 200) {
           const userData = response.data;
