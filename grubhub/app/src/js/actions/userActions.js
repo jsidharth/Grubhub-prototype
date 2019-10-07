@@ -77,13 +77,12 @@ const getUser = payload => {
 const uploadProfileImage = payload => {
   return dispatch => {
     return axios
-      .post(`http://localhost:3001/user/upload/image`, payload)
+      .post(
+        `http://localhost:3001/user/upload/image/profile/${payload.user_id}`,
+        payload.data
+      )
       .then(response => {
         if (response.status === 200) {
-          dispatch({
-            type: actionTypes.SET_PROFILE_IMAGE,
-            payload: response.data
-          });
           toast.success("Uploaded");
         }
       });

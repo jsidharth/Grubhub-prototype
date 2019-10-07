@@ -1,0 +1,129 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Signup component should render correctly 1`] = `
+<div
+  className="container shadow p-3 singup_form"
+>
+  <form
+    onSubmit={[Function]}
+  >
+    <div
+      className="form-group"
+    >
+      <label
+        htmlFor="firstName"
+      >
+        First Name
+      </label>
+      <input
+        className="form-control first_name"
+        id="first_name"
+        onChange={[Function]}
+        placeholder="First Name"
+        type="text"
+      />
+    </div>
+    <div
+      className="form-group"
+    >
+      <label
+        htmlFor="lastName"
+      >
+        Last Name
+      </label>
+      <input
+        className="form-control"
+        id="last_name"
+        onChange={[Function]}
+        placeholder="Last Name"
+        type="text"
+      />
+    </div>
+    <div
+      className="form-group"
+    >
+      <label
+        htmlFor="email"
+      >
+        Email address
+      </label>
+      <input
+        aria-describedby="emailHelp"
+        className="form-control"
+        id="email"
+        onChange={[Function]}
+        placeholder="Enter email"
+        type="email"
+      />
+      <small
+        className="form-text text-muted"
+        id="emailHelp"
+      >
+        We'll never share your email with anyone else.
+      </small>
+    </div>
+    <div
+      className="form-group"
+    >
+      <label
+        htmlFor="password"
+      >
+        Password
+      </label>
+      <input
+        className="form-control"
+        id="password"
+        onChange={[Function]}
+        placeholder="Password"
+        type="password"
+      />
+    </div>
+    <label>
+      User type:
+    </label>
+    <div
+      className="form-check"
+    >
+      <input
+        className="form-check-input"
+        defaultChecked={true}
+        id="type"
+        name="userTypeRadio"
+        onChange={[Function]}
+        type="radio"
+        value="Customer"
+      />
+      <label
+        className="form-check-label"
+        htmlFor="customerRadio"
+      >
+        Customer
+      </label>
+    </div>
+    <div
+      className="form-check"
+    >
+      <input
+        className="form-check-input"
+        id="type"
+        name="userTypeRadio"
+        onChange={[Function]}
+        type="radio"
+        value="Owner"
+      />
+      <label
+        className="form-check-label"
+        htmlFor="ownerRadio"
+      >
+        Owner
+      </label>
+    </div>
+    <button
+      className="btn btn-primary m-3 sign-up-btn"
+      type="submit"
+    >
+      Sign Up
+    </button>
+  </form>
+</div>
+`;

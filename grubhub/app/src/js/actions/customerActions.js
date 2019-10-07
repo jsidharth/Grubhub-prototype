@@ -52,7 +52,7 @@ const placeOrder = (payload, ownProps) => {
         if (response.status === 200) {
           dispatch({ type: actionTypes.CLEAR_CART, payload: response.data });
           ownProps.history.replace(`/${payload.user_id}/order`);
-          toast.success('Order placed!')
+          toast.success("Order placed!");
         }
       });
   };

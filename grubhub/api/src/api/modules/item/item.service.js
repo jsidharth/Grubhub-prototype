@@ -1,7 +1,8 @@
 import { Items, Items_Restaurant, Restaurants } from "./../../../sequelize";
 import _ from 'lodash';
-import Sequelize from 'Sequelize';
+import Sequelize from 'sequelize';
 import Promise from 'bluebird';
+import { uploader } from "./../../../../config/cloudinaryConfig";
 const Op = Sequelize.Op;
 
 const addItem = (item_details) => {
@@ -47,13 +48,12 @@ const updateItem = (item_details) => {
         if(!item) {
             throw new Error('Item not found');
         }
-        const {name, section, rate, description, image} = item_details;
+        const {name, section, rate, description} = item_details;
         return item.update({
             name,
             section,
             rate,
-            description,
-            image
+            description
         }).then(() => {
             return Items.findOne({
                 where: {
@@ -125,10 +125,39 @@ const searchItems = (search_key) => {
     });
 }
 
+const uploadImage = payload => {
+    return uploader
+      .upload(payload.file, {transformation: [{width: 150, height: 100, crop: "scale"}]})
+      .then(result => {
+        const image = result.url;
+        return Items.findOne({
+          where:{
+            id: payload.item_id
+          }
+        }).then(item => {
+          if(!item) {
+            throw new Error('Item not found!');
+          }
+          return item.update({
+            image
+          }).then(() => {
+            return ({
+              image
+            });
+          });
+        });
+      })
+      .catch(err => ({
+        messge: "Someting went wrong while uploading image",
+        err
+      }));
+  };
+
 export {
     addItem,
     getItemDetails,
     updateItem,
     deleteItem,
-    searchItems
+    searchItems,
+    uploadImage
 }

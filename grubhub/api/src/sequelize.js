@@ -7,7 +7,12 @@ import {itemModel, itemOrderModel, itemRestaurantModel} from './api/modules/item
 const sequelize = new Sequelize('grubhub', 'root', 'root123', {
     host: 'localhost',
     dialect: 'mysql',
-    logging: false
+    logging: false,
+    pool: {
+        max: 10,
+        min: 0,
+        idle: 10000
+      }
 });
 
 //Table creations

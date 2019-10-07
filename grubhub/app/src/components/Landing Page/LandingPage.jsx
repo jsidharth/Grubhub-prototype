@@ -12,10 +12,10 @@ class Landingpage extends Component {
           </div>
           <div className="col-md text-center landing_button">
             <Link to="/signup">
-              <button className="btn btn-outline-primary btn-lg m-5">Sign Up</button>
+              <button className="btn btn-outline-primary btn-lg m-5 sign-up">Sign Up</button>
             </Link>
             <Link to="/signin">
-              <button className="btn btn-outline-primary btn-lg">Sign In</button>
+              <button className="btn btn-outline-primary btn-lg sign-in">Sign In</button>
             </Link>
           </div>
         </div>

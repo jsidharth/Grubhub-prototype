@@ -1,0 +1,82 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Signup component should render correctly 1`] = `
+<div
+  className="container shadow p-3 singup_form"
+>
+  <form
+    onSubmit={[Function]}
+  >
+    <div
+      className="form-group"
+    >
+      <label
+        htmlFor="email"
+      >
+        Email address
+      </label>
+      <input
+        aria-describedby="emailHelp"
+        className="form-control email"
+        id="email"
+        onChange={[Function]}
+        placeholder="Enter email"
+        type="email"
+      />
+      <small
+        className="form-text text-muted"
+        id="emailHelp"
+      >
+        We'll never share your email with anyone else.
+      </small>
+    </div>
+    <div
+      className="form-group"
+    >
+      <label
+        htmlFor="password"
+      >
+        Password
+      </label>
+      <input
+        className="form-control password"
+        id="password"
+        onChange={[Function]}
+        placeholder="Password"
+        type="password"
+      />
+    </div>
+    <button
+      className="btn btn-primary m-3 sign-in"
+      type="submit"
+    >
+      Sign in
+    </button>
+  </form>
+  <ToastContainer
+    autoClose={2000}
+    bodyClassName={null}
+    className={null}
+    closeButton={
+      <CloseButton
+        ariaLabel="close"
+      />
+    }
+    closeOnClick={true}
+    draggable={true}
+    draggablePercent={80}
+    hideProgressBar={false}
+    newestOnTop={false}
+    pauseOnFocusLoss={true}
+    pauseOnHover={true}
+    position="top-right"
+    progressClassName={null}
+    progressStyle={null}
+    role="alert"
+    rtl={false}
+    style={null}
+    toastClassName={null}
+    transition={[Function]}
+  />
+</div>
+`;

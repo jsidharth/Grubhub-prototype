@@ -86,14 +86,13 @@ const updateUser = userDetails => {
     if (!user) {
       throw new Error("User not found");
     }
-    const { first_name, last_name, phone, address, image } = userDetails;
+    const { first_name, last_name, phone, address } = userDetails;
     return user
       .update({
         first_name,
         last_name,
         phone,
-        address,
-        image
+        address
       })
       .then(() => {
         return Users.findOne({
@@ -140,13 +139,26 @@ const updateUser = userDetails => {
   });
 };
 
-const uploadImage = file => {
+const uploadImage = payload => {
   return uploader
-    .upload(file, {transformation: [{width: 150, height: 100, crop: "scale"}]})
+    .upload(payload.file, {transformation: [{width: 150, height: 100, crop: "scale"}]})
     .then(result => {
       const image = result.url;
-      return ({
-        image
+      return Users.findOne({
+        where:{
+          id: payload.user_id
+        }
+      }).then(user => {
+        if(!user) {
+          throw new Error('User not found!');
+        }
+        return user.update({
+          image
+        }).then(() => {
+          return ({
+            image
+          });
+        });
       });
     })
     .catch(err => ({

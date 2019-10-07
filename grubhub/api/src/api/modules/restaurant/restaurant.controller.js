@@ -1,6 +1,8 @@
 import express from "express";
 import passport from "passport";
 import * as restaurantService from "./restaurant.service";
+import {multerUploads, dataUri} from './../../../multer';
+import {cloudinaryConfig } from './../../../../config/cloudinaryConfig'
 const restaurantRouter = express.Router();
 
 restaurantRouter.get("/:user_id", (req, res) => {
@@ -58,6 +60,27 @@ restaurantRouter.put('/menu/section/delete', (req, res) => {
     res.status(500).json({
       message: err.message
     });
+  });
+});
+
+restaurantRouter.post("/upload/image/restaurant/:restaurant_id", multerUploads, cloudinaryConfig, (req, res) => {
+  let file;
+  if(req.file) {
+    file = dataUri(req).content;
+  } else {
+    res.status(400).json({
+      message: 'No file Uploaded'
+    });
+  }
+  restaurantService.uploadImage({
+    file,
+    restaurant_id: req.params.restaurant_id
+  }).then(result => {
+    res.status(200).json(result);
+  }).catch(err => {
+    res.status(500).json({
+          message: err.message
+      });
   });
 });
 

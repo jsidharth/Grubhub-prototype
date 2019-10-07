@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {connect} from "react-redux";
 import {userActions} from '../../js/actions/index';
 
-class Signup extends Component {
+export class Signup extends Component {
   constructor() {
     super();
     this.state = {
@@ -32,8 +32,11 @@ class Signup extends Component {
             <label htmlFor="firstName">First Name</label>
             <input
               type="text"
-              className="form-control"
+              className="form-control first_name"
               id="first_name"
+              pattern="[a-z A-z]+"
+              title="Only Alphabets"
+              required
               placeholder="First Name"
               onChange = {this.handleChange}
             />
@@ -45,6 +48,9 @@ class Signup extends Component {
               className="form-control"
               id="last_name"
               placeholder="Last Name"
+              pattern="[a-z A-z]+"
+              title="Only Alphabets"
+              required
               onChange = {this.handleChange}
             />
           </div>
@@ -56,6 +62,7 @@ class Signup extends Component {
               id="email"
               aria-describedby="emailHelp"
               placeholder="Enter email"
+              required
               onChange = {this.handleChange}></input>
             <small id="emailHelp" className="form-text text-muted">
               We'll never share your email with anyone else.
@@ -68,6 +75,7 @@ class Signup extends Component {
               className="form-control"
               id="password"
               placeholder="Password"
+              required
               onChange = {this.handleChange}
             />
           </div>
@@ -99,7 +107,7 @@ class Signup extends Component {
               Owner
             </label>
           </div>
-          <button type="submit" className="btn btn-primary m-3">
+          <button type="submit" className="btn btn-primary m-3 sign-up-btn">
             Sign Up
           </button>
         </form>

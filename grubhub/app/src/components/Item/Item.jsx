@@ -4,7 +4,7 @@ import { itemActions } from "./../../js/actions/index";
 import { Container, Row, Col, Image } from "react-bootstrap";
 import "./style.css";
 import Sidebar from "../Sidebar/Sidebar";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 class Item extends Component {
   constructor(props) {
     super(props);
@@ -35,6 +35,7 @@ class Item extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.item.id && this.props.match.params.item_id) {
+      console.log("here")
       const { id, name, description, section, rate, image } = nextProps.item;
       this.setState({
         id,
@@ -46,10 +47,6 @@ class Item extends Component {
         restaurant_id: nextProps.restaurant_id,
         update: true,
         file: "Choose file"
-      });
-    } else {
-      this.setState({
-        image: nextProps.item.image
       });
     }
   }
@@ -84,9 +81,12 @@ class Item extends Component {
   handleUpload = e => {
     e.preventDefault();
     const data = new FormData();
-    if(this.uploadInput.files && this.uploadInput.files.length) {
-      data.append('file', this.uploadInput.files[0] || '');
-      this.props.uploadImage(data);
+    if (this.uploadInput.files && this.uploadInput.files.length) {
+      data.append("file", this.uploadInput.files[0] || "");
+      this.props.uploadImage({
+        item_id: this.state.id,
+        data
+      });
     } else {
       toast.warning("No file selected!");
     }
@@ -107,6 +107,9 @@ class Item extends Component {
                 placeholder="Item Name"
                 value={this.state.name}
                 onChange={this.handleChange}
+                pattern="[a-z A-z]+"
+                title="Only Alphabets"
+                required
               />
             </div>
             <div className="form-group">
@@ -127,6 +130,9 @@ class Item extends Component {
                 className="form-control"
                 id="section"
                 placeholder="Section"
+                pattern="[a-z A-z]+"
+                title="Only Alphabets"
+                required
                 value={this.state.section}
                 onChange={this.handleChange}
               />
@@ -134,78 +140,82 @@ class Item extends Component {
             <div className="form-group">
               <label htmlFor="rate">Rate</label>
               <input
-                type="text"
+                type="number"
                 className="form-control"
                 id="rate"
-                placeholder="rate"
+                placeholder="Rate"
+                required
                 value={this.state.rate}
                 onChange={this.handleChange}
               />
             </div>
-            <label htmlFor="image">Image</label>
-            <div className="form-inline image-upload">
-              <div className="custom-file">
-                <input
-                  type="file"
-                  className="custom-file-input"
-                  id="file"
-                  accept="image/*"
-                  ref={ref => {
-                    this.uploadInput = ref;
-                  }}
-                  aria-describedby="fileUpload"
-                  onChange={e => {
-                    if (e.target.value) {
-                      let fileName = e.target.value.split("\\");
-                      this.setState({
-                        file:
-                          fileName && fileName.length
-                            ? fileName[fileName.length - 1]
-                            : "Choose file"
-                      });
-                    }
-                  }}
-                />
-                <label
-                  className="custom-file-label"
-                  id="image-label"
-                  htmlFor="file">
-                  {this.state.file}
-                </label>
-              </div>
-              <div className="input-group-append">
-                <button
-                  className="btn btn-outline-secondary m-2"
-                  type="button"
-                  id="fileUpload"
-                  onClick={this.handleUpload}>
-                  Upload
-                </button>
-              </div>
-            </div>
-            <div className="form-group">
-              <Container style={{ width: "30rem" }}>
-                <Row>
-                  <Col xs={6} md={4}>
-                    <Image src={this.state.image} rounded />
-                  </Col>
-                </Row>
-              </Container>
-            </div>
             {this.state.update ? (
               <div>
-                <button
-                  type="submit"
-                  className="btn btn-primary m-3"
-                  onClick={e => this.handleUpdate(e)}>
-                  Update
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary m-3"
-                  onClick={e => this.handleDelete(e)}>
-                  Delete
-                </button>
+                <label htmlFor="image">Image</label>
+                <div className="form-inline image-upload">
+                  <div className="custom-file">
+                    <input
+                      type="file"
+                      className="custom-file-input"
+                      id="file"
+                      accept="image/*"
+                      ref={ref => {
+                        this.uploadInput = ref;
+                      }}
+                      aria-describedby="fileUpload"
+                      onChange={e => {
+                        if (e.target.value) {
+                          let fileName = e.target.value.split("\\");
+                          this.setState({
+                            file:
+                              fileName && fileName.length
+                                ? fileName[fileName.length - 1]
+                                : "Choose file"
+                          });
+                        }
+                      }}
+                    />
+                    <label
+                      className="custom-file-label"
+                      id="image-label"
+                      htmlFor="file">
+                      {this.state.file}
+                    </label>
+                  </div>
+                  <div className="input-group-append">
+                    <button
+                      className="btn btn-outline-secondary m-2"
+                      type="button"
+                      id="fileUpload"
+                      onClick={this.handleUpload}>
+                      Upload
+                    </button>
+                  </div>
+                </div>
+                <div className="form-group">
+                  <Container>
+                    <Row>
+                      <Col xs={6} md={4}>
+                        <Image src={this.state.image} rounded width="250px" height="250px"/>
+                      </Col>
+                    </Row>
+                  </Container>
+                </div>
+
+                <div>
+                  <button
+                    type="submit"
+                    className="btn btn-primary m-3"
+                    onClick={e => this.handleUpdate(e)}>
+                    Update
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-primary m-3"
+                    onClick={e => this.handleDelete(e)}>
+                    Delete
+                  </button>
+                </div>
               </div>
             ) : (
               <button
@@ -230,7 +240,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  addItem: payload => dispatch(itemActions.addItem(payload)),
+  addItem: payload => dispatch(itemActions.addItem(payload, ownProps)),
   getItem: payload => dispatch(itemActions.getItem(payload)),
   updateItem: payload => dispatch(itemActions.updateItem(payload)),
   deleteItem: payload => dispatch(itemActions.deleteItem(payload, ownProps)),

@@ -5,7 +5,7 @@ import './style.css';
 import { userActions } from '../../js/actions/index';
 import { ToastContainer } from 'react-toastify';
 
-class Signin extends Component {
+export class Signin extends Component {
   constructor() {
     super();
     this.state = {
@@ -32,10 +32,11 @@ class Signin extends Component {
             <label htmlFor="email">Email address</label>
             <input
               type="email"
-              className="form-control"
+              className="form-control email"
               id="email"
               aria-describedby="emailHelp"
               placeholder="Enter email"
+              required
               onChange={this.handleChange}
             ></input>
             <small id="emailHelp" className="form-text text-muted">
@@ -46,13 +47,14 @@ class Signin extends Component {
             <label htmlFor="password">Password</label>
             <input
               type="password"
-              className="form-control"
+              className="form-control password"
               id="password"
               placeholder="Password"
+              required
               onChange={this.handleChange}
             />
           </div>
-          <button type="submit" className="btn btn-primary m-3">
+          <button type="submit" className="btn btn-primary m-3 sign-in">
             Sign in
           </button>
         </form>

@@ -129,13 +129,12 @@ const deleteSection = payload => {
 const uploadRestaurantImage = payload => {
   return dispatch => {
     return axios
-      .post(`http://localhost:3001/user/upload/image`, payload)
+      .post(
+        `http://localhost:3001/restaurant/upload/image/restaurant/${payload.restaurant_id}`,
+        payload.data
+      )
       .then(response => {
         if (response.status === 200) {
-          dispatch({
-            type: actionTypes.SET_RESTAURANT_IMAGE,
-            payload: response.data
-          });
           toast.success("Uploaded");
         }
       });

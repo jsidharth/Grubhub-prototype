@@ -2,15 +2,16 @@ import actionTypes from "../constants/index";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-const addItem = payload => {
+const addItem = (payload, ownProps) => {
   return dispatch => {
     return axios
       .post("http://localhost:3001/item/add", payload)
       .then(response => {
         if (response.status === 200) {
           dispatch({ type: actionTypes.SET_ITEM, payload: response.data });
+          toast.success("Added to menu!");
+          // ownProps.history.push(`/${payload.userid}/menu`);
         }
-        toast.success("Added to menu!");
       });
   };
 };
@@ -33,8 +34,8 @@ const updateItem = payload => {
       .then(response => {
         if (response.status === 200) {
           dispatch({ type: actionTypes.SET_ITEM, payload: response.data });
+          toast.success("Updated!");
         }
-        toast.success("Updated!");
       });
   };
 };
@@ -56,13 +57,12 @@ const deleteItem = (payload, ownProps) => {
 const uploadImage = payload => {
   return dispatch => {
     return axios
-      .post(`http://localhost:3001/user/upload/image`, payload)
+      .post(
+        `http://localhost:3001/item/upload/image/${payload.item_id}`,
+        payload.data
+      )
       .then(response => {
         if (response.status === 200) {
-          dispatch({
-            type: actionTypes.SET_ITEM_IMAGE,
-            payload: response.data
-          });
           toast.success("Uploaded");
         }
       });

@@ -39,11 +39,15 @@ class OwnerMenu extends Component {
     e.preventDefault();
     let key = parseInt(e.currentTarget.id);
     let value = e.currentTarget.value;
-    let updatedSection = [...this.state.sections];
-    _.find(updatedSection, { id: key }).updated_name = value;
-    this.setState({
-      sections: updatedSection,
-    });
+    if(new RegExp('^[a-zA-z]+$').test(value)){
+      let updatedSection = [...this.state.sections];
+      _.find(updatedSection, { id: key }).updated_name = value;
+      this.setState({
+        sections: updatedSection,
+      });
+    } else {
+      toast.warning('Oops! Only Alphabets');
+    }
   };
 
   handleEdit = e => {
@@ -58,7 +62,7 @@ class OwnerMenu extends Component {
         current_section.restaurant_id = this.props.restaurant.id;
         this.props.deleteSection(current_section);
       } else {
-        toast.warning('Oops! No update!')
+        toast.warning('Oops! No update!');
     }
   };
   render() {
@@ -91,12 +95,15 @@ class OwnerMenu extends Component {
                           key={eachSection.id}
                           id={eachSection.id}
                           placeholder="Section Name"
+                          pattern="[a-z A-z]+"
+                          title="Only Alphabets"
+                          required
                           aria-describedby="button-addon4"
                         />
                         <div className="input-group-append" id="button-addon4">
                           <button
                             className="btn btn-outline-secondary"
-                            type="button"
+                            type="submit"
                             name="edit"
                             value={eachSection.id}
                             onClick={this.handleEdit}

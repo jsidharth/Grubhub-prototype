@@ -92,14 +92,20 @@ class Account extends Component {
     if (e.target.value === 'profile_pic') {
       if(this.uploadProfile.files && this.uploadProfile.files.length) {
         data.append('file', this.uploadProfile.files[0] || '');
-        this.props.uploadProfileImage(data);
+        this.props.uploadProfileImage({
+          user_id: this.state.id,
+          data
+        });
       } else {
         toast.warning("No file selected!");
       }
     } else if (e.target.value === 'restaurant_pic') {
       if(this.uploadRestaurant.files && this.uploadRestaurant.files.length) {
         data.append('file', this.uploadRestaurant.files[0] || '');
-        this.props.uploadRestaurantImage(data);
+        this.props.uploadRestaurantImage({
+          restaurant_id: this.state.restaurant_id,
+          data
+        });
       } else {
         toast.warning("No file selected!");
       }
@@ -118,6 +124,8 @@ class Account extends Component {
                 className="form-control first_name"
                 id="first_name"
                 placeholder="First Name"
+                pattern="[a-z A-z]+"
+                title="Only Alphabets"
                 value={this.state.first_name}
                 onChange={this.handleChange}
               />
@@ -129,6 +137,8 @@ class Account extends Component {
                 className="form-control last_name"
                 id="last_name"
                 placeholder="Last Name"
+                pattern="[a-z A-z]+"
+                title="Only Alphabets"
                 value={this.state.last_name}
                 onChange={this.handleChange}
               />
@@ -152,6 +162,9 @@ class Account extends Component {
                 className="form-control"
                 id="phone"
                 placeholder="Phone"
+                pattern="[0-9\-]+"
+                title="Only numbers and hyphens"
+                required
                 value={this.state.phone}
                 onChange={this.handleChange}
               />
@@ -162,6 +175,7 @@ class Account extends Component {
                 className="form-control"
                 id="address"
                 placeholder="Address"
+                required
                 value={this.state.address}
                 onChange={this.handleChange}
               />
@@ -224,6 +238,9 @@ class Account extends Component {
                     className="form-control"
                     id="restaurant_name"
                     placeholder="Name of your restaurant"
+                    pattern="[a-z A-z]+"
+                    title="Only Alphabets"
+                    required
                     value={this.state.restaurant_name}
                     onChange={this.handleChange}
                   />
@@ -235,6 +252,9 @@ class Account extends Component {
                     className="form-control"
                     id="cuisine"
                     placeholder="Cusine"
+                    pattern="[a-z A-z]+"
+                    title="Only Alphabets"
+                    required
                     value={this.state.cuisine}
                     onChange={this.handleChange}
                   />
@@ -253,10 +273,13 @@ class Account extends Component {
                 <div className="form-group">
                   <label htmlFor="cuisine">Restaurant Zipcode</label>
                   <input
-                    type="text"
+                    type="number"
                     className="form-control"
                     id="restaurant_zipcode"
                     placeholder="Restaurant Zipcode"
+                    pattern="[0-9]+"
+                    title="Only Alphabets"
+                    required
                     value={this.state.restaurant_zipcode}
                     onChange={this.handleChange}
                   />

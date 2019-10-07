@@ -1,6 +1,7 @@
 import { Restaurants, Items, Items_Restaurant } from "../../../sequelize";
 import _ from "lodash";
 import Promise from 'bluebird';
+import { uploader } from "./../../../../config/cloudinaryConfig";
 
 const createRestaurant = restaurantDetails => {
   return Restaurants.create({
@@ -51,7 +52,6 @@ const updateDetails = restaurantDetails => {
       .update({
         name: restaurantDetails.restaurant_name,
         cuisine: restaurantDetails.cuisine,
-        image: restaurantDetails.restaurant_image,
         address: restaurantDetails.address,
         zipcode: restaurantDetails.zipcode
       })
@@ -181,6 +181,35 @@ const deleteSection = section => {
   });
   
 }
+
+const uploadImage = payload => {
+  return uploader
+    .upload(payload.file, {transformation: [{width: 150, height: 100, crop: "scale"}]})
+    .then(result => {
+      const image = result.url;
+      return Restaurants.findOne({
+        where:{
+          id: payload.restaurant_id
+        }
+      }).then(restaurant => {
+        if(!restaurant) {
+          throw new Error('Restaurant not found!');
+        }
+        return restaurant.update({
+          image
+        }).then(() => {
+          return ({
+            image
+          });
+        });
+      });
+    })
+    .catch(err => ({
+      messge: "Someting went wrong while uploading image",
+      err
+    }));
+};
+
 export {
   createRestaurant,
   updateDetails,
@@ -188,5 +217,6 @@ export {
   getRestaurantMenu,
   getRestaurantDetails,
   updateSection,
-  deleteSection
+  deleteSection,
+  uploadImage
 };

@@ -49,7 +49,7 @@ userRouter.put("/update/:user_id", passport.authenticate("jwt"), (req, res) => {
     });
 });
 //TODO: add jwt auth
-userRouter.post("/upload/image", multerUploads, cloudinaryConfig, (req, res) => {
+userRouter.post("/upload/image/profile/:user_id", multerUploads, cloudinaryConfig, (req, res) => {
   let file;
   if(req.file) {
     file = dataUri(req).content;
@@ -58,7 +58,10 @@ userRouter.post("/upload/image", multerUploads, cloudinaryConfig, (req, res) => 
       message: 'No file Uploaded'
     });
   }
-  userService.uploadImage(file).then(result => {
+  userService.uploadImage({
+    file,
+    user_id: req.params.user_id
+  }).then(result => {
     res.status(200).json(result);
   }).catch(err => {
     res.status(500).json({
