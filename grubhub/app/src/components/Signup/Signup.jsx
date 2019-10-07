@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import {connect} from "react-redux";
 import {userActions} from '../../js/actions/index';
+import { ToastContainer } from 'react-toastify';
 
 export class Signup extends Component {
   constructor() {
@@ -111,6 +112,7 @@ export class Signup extends Component {
             Sign Up
           </button>
         </form>
+        <ToastContainer autoClose={2000} />
       </div>
     );
   }

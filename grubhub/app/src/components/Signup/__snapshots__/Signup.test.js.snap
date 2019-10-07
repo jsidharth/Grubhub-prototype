@@ -19,7 +19,10 @@ exports[`Signup component should render correctly 1`] = `
         className="form-control first_name"
         id="first_name"
         onChange={[Function]}
+        pattern="[a-z A-z]+"
         placeholder="First Name"
+        required={true}
+        title="Only Alphabets"
         type="text"
       />
     </div>
@@ -35,7 +38,10 @@ exports[`Signup component should render correctly 1`] = `
         className="form-control"
         id="last_name"
         onChange={[Function]}
+        pattern="[a-z A-z]+"
         placeholder="Last Name"
+        required={true}
+        title="Only Alphabets"
         type="text"
       />
     </div>
@@ -53,6 +59,7 @@ exports[`Signup component should render correctly 1`] = `
         id="email"
         onChange={[Function]}
         placeholder="Enter email"
+        required={true}
         type="email"
       />
       <small
@@ -75,6 +82,7 @@ exports[`Signup component should render correctly 1`] = `
         id="password"
         onChange={[Function]}
         placeholder="Password"
+        required={true}
         type="password"
       />
     </div>

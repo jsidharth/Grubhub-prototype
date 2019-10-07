@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Signup component should render correctly 1`] = `
+exports[`Signin component should render correctly 1`] = `
 <div
   className="container shadow p-3 singup_form"
 >
@@ -21,6 +21,7 @@ exports[`Signup component should render correctly 1`] = `
         id="email"
         onChange={[Function]}
         placeholder="Enter email"
+        required={true}
         type="email"
       />
       <small
@@ -43,6 +44,7 @@ exports[`Signup component should render correctly 1`] = `
         id="password"
         onChange={[Function]}
         placeholder="Password"
+        required={true}
         type="password"
       />
     </div>

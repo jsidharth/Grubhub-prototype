@@ -23,7 +23,7 @@ axios.interceptors.request.use( (config) => {
  }, 
  function (error) {
   if (error.response.status === 401) {
-      window.location.href = "/signin"
+    
       toast.error('Unauthorized!');
   } else if(error.response.status === 500) {
       const msg = error.response.data.message ? error.response.data.message : 'Oops! Something went wrong!';
