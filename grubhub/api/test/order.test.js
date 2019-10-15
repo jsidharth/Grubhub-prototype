@@ -16,7 +16,7 @@ describe('GET Order details', function() {
             .set('Authorization', `JWT ${token}`)
             .then(function(res){
                 expect(res.status).to.equal(200);
-                expect(res.body.amount).to.equal(200);
+                expect(res.body.amount).to.equal(24);
                 expect(res.body.id).to.equal(1);
                 done();
             });

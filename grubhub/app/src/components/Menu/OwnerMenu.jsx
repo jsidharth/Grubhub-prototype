@@ -16,23 +16,24 @@ class OwnerMenu extends Component {
     };
   }
   componentDidMount() {
-    this.props.getMenu({ restaurant_id: this.props.restaurant.id });
+    if(this.props.restaurant && this.props.restaurant.id) {
+      this.props.getMenu({ restaurant_id: this.props.restaurant.id });
+    }
   }
   componentWillReceiveProps(nextProps) {
+    let sections = [];
     if (nextProps.restaurant.menu && nextProps.restaurant.menu.length) {
-      const sections = nextProps.restaurant.menu.map(eachSection => ({
+        sections = nextProps.restaurant.menu.map(eachSection => ({
         name: eachSection.section,
         id: eachSection.id,
         items: _.map(eachSection.items, 'id'),
         updated_name: '',
       }));
-      this.setState({
-        menu: nextProps.restaurant.menu,
-        sections,
-      });
-    } else {
-      this.props.getMenu({ restaurant_id: this.props.restaurant.id });
     }
+    this.setState({
+      menu: nextProps.restaurant.menu,
+      sections,
+    });
   }
 
   handleChange = e => {

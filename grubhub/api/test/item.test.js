@@ -16,8 +16,8 @@ describe('GET item details', function() {
             .set('Authorization', `JWT ${token}`)
             .then(function(res){
                 expect(res.status).to.equal(200);
-                expect(res.body.rate).to.equal(50);
-                expect(res.body.name).to.equal('Donut updated');
+                expect(res.body.rate).to.equal(5);
+                expect(res.body.name).to.equal('Chicken Pizza');
                 done();
             });
     });

@@ -14,7 +14,7 @@ describe('GET User /getdetails', function() {
                 expect(res.body.first_name).to.equal('Sidharth');
                 expect(res.body.last_name).to.equal('Jayaprakash');
                 expect(res.body.email).to.equal('sidharthjayaprakash93@gmail.com');
-                expect(res.body.type).to.equal('Owner');
+                expect(res.body.type).to.equal('Customer');
                 done();
             });
     });

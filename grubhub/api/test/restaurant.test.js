@@ -13,11 +13,11 @@ describe('GET restaurant details', function() {
         token = jwt.sign({ id: 1 }, 'jwt-secret');
     })
     it('Should have valid restaurant details for valid owner account', function(done){
-        agent.get(`/restaurant/1`)
+        agent.get(`/restaurant/2`)
             .set('Authorization', `JWT ${token}`)
             .then(function(res){
-                expect(res.body.name).to.equal('Sidharth Restaurants');
-                expect(res.body.zipcode).to.equal(95113);
+                expect(res.body.name).to.equal('Dominos');
+                expect(res.body.zipcode).to.equal(95112);
                 done();
             });
     });
