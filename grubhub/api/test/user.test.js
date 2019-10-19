@@ -1,4 +1,4 @@
-var Users = require('./../src/sequelize').Users;
+//var Users = require('./../src/sequelize').Users;
 var assert = require('chai').assert;
 var app = require('../src/app');
 var chai = require('chai');

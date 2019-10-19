@@ -13,6 +13,7 @@ const itemReducer = (state=initialState, action) => {
     switch(action.type) {
         case actionTypes.SET_ITEM:
             newState = action.payload;
+            newState.id = action.payload._id;
             return Object.assign({}, state, newState);
         case actionTypes.CLEAR_ITEM:
             newState = initialState;

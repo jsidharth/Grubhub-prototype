@@ -1,23 +1,21 @@
-const userModel = (sequelize, type) => {
-    return sequelize.define('user', {
-        id: {
-            type: type.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
-        },
-        first_name: type.STRING,
-        last_name: type.STRING,
-        email: {
-            type: type.STRING,
-            allowNull: false,
-            unique: true
-        },
-        password: type.STRING,
-        type: type.STRING,
-        phone: type.STRING,
-        address: type.STRING,
-        image: type.STRING
-    });
-};
+import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
 
-export default userModel;
+const userSchema = new Schema({
+    first_name: String,
+    last_name: String,
+    email: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    password: String,
+    type: String,
+    phone: String,
+    address: String,
+    image: String,
+    restaurant: {type: Schema.ObjectId, ref: 'Restaurant'},
+    orders:[{type: Schema.ObjectId, ref: 'Order'}]
+});
+
+export default mongoose.model('User', userSchema);

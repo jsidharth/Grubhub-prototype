@@ -3,6 +3,9 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import session from 'express-session';
 import cookieParser from 'cookie-parser';
+import mongoose from 'mongoose';
+import Promise from 'bluebird';
+mongoose.Promise = Promise;
 import router from './routes';
 import cors from 'cors';
 import passport from 'passport';
@@ -23,6 +26,7 @@ app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 //     activeDuration      :  5 * 60 * 1000
 // }));
 
+// TODO: Check this
 //noapp.use(passport.session());
 
 
@@ -30,7 +34,13 @@ app.use(bodyParser.urlencoded({
     extended: true
   }));
 app.use(bodyParser.json());
-
+//db connection
+mongoose.connect('mongodb://localhost:27017/grubhub', {useNewUrlParser: true}).then(() => {
+  console.log('Connection to mongo successfull')
+  
+}).catch(err => {
+  console.log('Connection to mongo failed', err);
+})
 //Allow Access Control
 app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');

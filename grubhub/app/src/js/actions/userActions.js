@@ -28,6 +28,8 @@ const loginUser = (payload, ownProps) => {
           cookie.set("token", userData.token, { expires: 1 });
           dispatch({ type: actionTypes.SET_USER, payload: userData });
           if (userData.type === "Owner") {
+            // A restaurant document with blank details is created. Set the restaurant id of the user
+            dispatch({ type: actionTypes.SET_RESTAURANT, payload: {id: userData.restaurant} });
             ownProps.history.push(`/${userData.id}/account`);
           } else {
             ownProps.history.push(`/${userData.id}/search`);

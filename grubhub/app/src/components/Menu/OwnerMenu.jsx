@@ -38,7 +38,7 @@ class OwnerMenu extends Component {
 
   handleChange = e => {
     e.preventDefault();
-    let key = parseInt(e.currentTarget.id);
+    let key = e.currentTarget.id;
     let value = e.currentTarget.value;
     if(new RegExp('^[a-zA-z]+$').test(value)){
       let updatedSection = [...this.state.sections];
@@ -54,7 +54,7 @@ class OwnerMenu extends Component {
   handleEdit = e => {
     e.preventDefault();
     const current_section = _.find(this.state.sections, {
-      id: parseInt(e.currentTarget.value),
+      id: e.currentTarget.value,
     });
     if (current_section.updated_name && e.currentTarget.name === 'edit') {
         current_section.restaurant_id = this.props.restaurant.id;
@@ -127,9 +127,9 @@ class OwnerMenu extends Component {
                       <Container>
                         <Row>
                           {eachSection.items.map(item => {
-                            let item_detail_link = `/item/detail/${item.id}`;
+                            let item_detail_link = `/item/detail/${item._id}`;
                             return (
-                              <Link key={item.id} to={item_detail_link}>
+                              <Link key={item._id} to={item_detail_link}>
                                 <div className="m-2">
                                   <Card style={{ width: '14rem' }}>
                                     <Card.Img variant="top" src={item.image} />

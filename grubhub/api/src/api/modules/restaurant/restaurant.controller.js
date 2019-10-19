@@ -5,10 +5,10 @@ import {multerUploads, dataUri} from './../../../multer';
 import {cloudinaryConfig } from './../../../../config/cloudinaryConfig'
 const restaurantRouter = express.Router();
 
-restaurantRouter.get("/:user_id", (req, res) => {
-  const user_id = req.params.user_id;
+restaurantRouter.get("/:restaurant_id", (req, res) => {
+  const restaurant_id = req.params.restaurant_id;
   restaurantService
-    .getRestaurant(user_id)
+    .getRestaurant(restaurant_id)
     .then(result => {
       res.status(200).json(result);
     })

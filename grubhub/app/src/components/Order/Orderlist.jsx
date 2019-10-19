@@ -16,7 +16,7 @@ class Order extends Component {
       past_orders: [],
       past_orders_coloumns: [
         {
-          dataField: "id",
+          dataField: "_id",
           text: "Order ID",
           formatter: this.orderIdFormatter
         },
@@ -31,7 +31,7 @@ class Order extends Component {
       ],
       current_order_columns: [
         {
-          dataField: "id",
+          dataField: "_id",
           text: "Order ID",
           formatter: this.orderIdFormatter
         },
@@ -118,7 +118,7 @@ class Order extends Component {
 
   //Link to detail page for order ID
   orderIdFormatter = (cell, row) => {
-    let detailpage_link = `/order/detail/${row.id}`;
+    let detailpage_link = `/order/detail/${row._id}`;
     return <Link to={detailpage_link}>{cell}</Link>;
   };
 

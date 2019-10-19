@@ -1,10 +1,12 @@
-import { Restaurants, Items, Items_Restaurant } from "../../../sequelize";
+import Restaurant from "./restaurant.model";
+import Item from "./../item/item.model";
 import _ from "lodash";
 import Promise from 'bluebird';
 import { uploader } from "./../../../../config/cloudinaryConfig";
 
+//TODO: Check impact if removed
 const createRestaurant = restaurantDetails => {
-  return Restaurants.create({
+  return Restaurant.create({
     name: restaurantDetails.restaurant_name,
     cuisine: restaurantDetails.cuisine,
     image: restaurantDetails.restaurant_image,
@@ -26,12 +28,10 @@ const createRestaurant = restaurantDetails => {
   });
 };
 
-const getRestaurant = user_id => {
-  return Restaurants.findOne({
-    where: {
-      user_id
-    }
-  }).then(restaurant => {
+const getRestaurant = restaurant_id => {
+  return Restaurant.findById(
+    restaurant_id
+  ).then(restaurant => {
     if (!restaurant) {
       return {};
     }
@@ -40,92 +40,72 @@ const getRestaurant = user_id => {
 };
 
 const updateDetails = restaurantDetails => {
-  return Restaurants.findOne({
-    where: {
-      id: restaurantDetails.id
-    }
-  }).then(restaurant => {
+  return Restaurant.findById(
+      restaurantDetails.id
+  ).then(restaurant => {
     if(!restaurant) {
       throw new Error('No restaurant found');
     }
+    restaurant.name = restaurantDetails.restaurant_name;
+    restaurant.cuisine = restaurantDetails.cuisine;
+    restaurant.address = restaurantDetails.address;
+    restaurant.zipcode = restaurantDetails.zipcode;
     return restaurant
-      .update({
-        name: restaurantDetails.restaurant_name,
-        cuisine: restaurantDetails.cuisine,
-        address: restaurantDetails.address,
-        zipcode: restaurantDetails.zipcode
-      })
-      .then(updatedRestaurant => {
-        return Restaurants.findOne({
-          where: {
-            id: updatedRestaurant.id
-          }
-        }).then(restaurant => {
-          return {
-            id: restaurant.id,
-            name: restaurant.name,
-            cuisine: restaurant.cuisine,
-            image: restaurant.image,
-            address: restaurant.address,
-            zipcode: restaurant.zipcode
-          };
-        });
-      });
+      .save()
+      .then(updatedRestaurant => ({
+            id: updatedRestaurant.id,
+            name: updatedRestaurant.name,
+            cuisine: updatedRestaurant.cuisine,
+            image: updatedRestaurant.image,
+            address: updatedRestaurant.address,
+            zipcode: updatedRestaurant.zipcode
+      }));
   });
 };
 
 const getRestaurantMenu = restaurant_id => {
-  return Restaurants.findOne({
-    where: {
-      id: restaurant_id
-    }
-  }).then(restaurant => {
+  return Restaurant.findById(
+      restaurant_id
+    ).populate('items')
+    .lean()
+    .then(restaurant => {
     if (!restaurant) {
       throw new Error("No restaurant found");
     }
-    return Items_Restaurant.findAll({
-      where: {
-        restaurant_id
-      },
-      include: [
-        {
-          model: Items
-        },
-        {
-          model: Restaurants
-        }
-      ]
-    }).then(allItems => {
-      if (!allItems || !allItems.length) {
-        return [];
-      }
-      const groupedItems = _.chain(allItems)
-        .map("item")
-        .groupBy("section")
-        .map((value, key) => ({
+    if (!restaurant.items || !restaurant.items.length) {
+      return [];
+    }
+    const groupedItems = _.chain(restaurant.items)
+      .groupBy("section")
+      .map((value, key) => {
+        value = _.map(value, (item) => {
+          item.id = item._id;
+          return item
+        });
+        return {
           section: key,
-          id: value[0].id,
+          id: value[0]._id,
           items: value
-        }))
-        .flatten()
-        .sortBy(each => each.section.toLowerCase())
-        .value();
-      return groupedItems;
-    });
+        }
+          
+      })
+      .flatten()
+      .sortBy(each => each.section.toLowerCase())
+      .value();
+    return groupedItems;
   });
 };
 
 const getRestaurantDetails = restaurant_id => {
-  return Restaurants.findOne({
-    where: {
-      id: restaurant_id
-    }
-  }).then(restaurant => {
+  return Restaurant.findById(
+    restaurant_id
+  ).lean().then(restaurant => {
     if (!restaurant) {
       throw new Error("Restaurant not found");
     }
     return getRestaurantMenu(restaurant_id).then(menu => {
-      restaurant.dataValues.menu = menu;
+      restaurant.menu = menu;
+      restaurant.id = restaurant._id;
       return {
         current_restaurant: restaurant
       };
@@ -138,42 +118,31 @@ const updateSection = section => {
     throw new Error('No items in section.')
   }
   return Promise.map(section.items, item => {
-    return Items.findOne({
-      where: {
-        id: item
-      }
-    }).then(currentItem => {
-      return currentItem.update({
-        section: section.updated_name
-      })
+    return Item.findById(item)
+    .then(currentItem => {
+      currentItem.section = section.updated_name;
+      return currentItem.save()
     })
   }).then(() => {
     return getRestaurantMenu(section.restaurant_id);
-  }).catch(err => {
-    return ({
+  }).catch(err => ({
       message: err
-    });
-  });
+    }));
 }
 
 const deleteSection = section => {
   if(!section.items || !section.items.length) {
     throw new Error('No items in section.')
   }
-  return Promise.map(section.items, item => {
-    return Items_Restaurant.destroy({
-      where: {
-        item_id: item
-      }
+  return Restaurant.findById(section.restaurant_id).then(restaurant => {
+    return Promise.map(section.items, item => {
+        return Item.findByIdAndDelete(item);
     }).then(() => {
-      return Items.destroy({
-        where: {
-          id: item
-        }
+      restaurant.items = _.filter(restaurant.items, item => !section.items.includes(item._id.toString()));
+      return restaurant.save().then((updatedRestaurant) => {
+        return getRestaurantMenu(updatedRestaurant.id);
       });
     });
-  }).then(() => {
-    return getRestaurantMenu(section.restaurant_id);
   }).catch(err => {
     return ({
       message: err
@@ -187,21 +156,16 @@ const uploadImage = payload => {
     .upload(payload.file, {transformation: [{width: 150, height: 100, crop: "scale"}]})
     .then(result => {
       const image = result.url;
-      return Restaurants.findOne({
-        where:{
-          id: payload.restaurant_id
-        }
-      }).then(restaurant => {
+      return Restaurant.findById(
+          payload.restaurant_id
+        ).then(restaurant => {
         if(!restaurant) {
           throw new Error('Restaurant not found!');
         }
-        return restaurant.update({
+        restaurant.image = image;
+        return restaurant.save().then(() => ({
           image
-        }).then(() => {
-          return ({
-            image
-          });
-        });
+        }));
       });
     })
     .catch(err => ({

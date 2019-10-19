@@ -33,7 +33,7 @@ class Account extends Component {
     const { id, first_name, last_name, email, phone, type, address, image } = this.props.user;
     if (type === 'Owner') {
       this.props.getRestaurant({
-        user_id: id,
+        restaurant_id: this.props.restaurant.id,
       });
     }
     const restaurant = this.props.restaurant;

@@ -1,29 +1,16 @@
-const orderModel = (sequelize, type) => {
-    return sequelize.define('order', {
-        id: {
-            type: type.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
-        },  
-        user_id: {
-            type: type.INTEGER,
-            references: {
-                model: 'users',
-                key: 'id'
-              }
-        },
-        restaurant_id: {
-            type: type.INTEGER,
-            references: {
-                model: 'restaurants',
-                key: 'id'
-              }
-        },
-        amount: type.INTEGER,
-        status: type.STRING
-    },{
-        underscored: true
-    });
-};
+import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
 
-export default orderModel;
+const orderSchema = new Schema({
+    items:[
+        {
+            _id: false,
+            item_id: { type: Schema.ObjectId, ref: "Item" },
+            quantity: Number
+        }
+    ],
+    status: String,
+    amount: Number
+});
+
+export default mongoose.model('Order', orderSchema);

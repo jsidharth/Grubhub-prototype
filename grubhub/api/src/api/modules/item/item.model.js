@@ -1,75 +1,16 @@
-const itemModel = (sequelize, type) => {
-    return sequelize.define('item', {
-        id: {
-            type: type.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
-        },  
-        name: type.STRING,
-        rate: type.FLOAT,
-        description: type.STRING,
-        image: type.STRING,
-        section: type.STRING
-    },{
-        underscored: true
-    });
-};
+import mongoose from 'mongoose';
+const Schema = mongoose.Schema;
 
-const itemOrderModel = (sequelize, type) => {
-    return sequelize.define('order_item', {
-        id: {
-            type: type.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
-        },  
-        item_id: {
-            type: type.INTEGER,
-            references: {
-                model: 'items',
-                key: 'id'
-              }
-        },
-        order_id: {
-            type: type.INTEGER,
-            references: {
-                model: 'orders',
-                key: 'id'
-              }
-        },
-        quantity: type.INTEGER
-    },{
-        underscored: true
-    });
-}
+const itemSchema = new Schema({
+    name: String,
+    rate:  Number,
+    description: String,
+    image: String,
+    section: String
+});
 
-const itemRestaurantModel = (sequelize, type) => {
-    return sequelize.define('restaurant_item', {
-        id: {
-            type: type.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
-        },  
-        item_id: {
-            type: type.INTEGER,
-            references: {
-                model: 'items',
-                key: 'id'
-              }
-        },
-        restaurant_id: {
-            type: type.INTEGER,
-            references: {
-                model: 'restaurants',
-                key: 'id'
-              }
-        },
-        quantity: type.INTEGER
-    },{
-        underscored: true
-    });
-}
-export {
-    itemModel,
-    itemOrderModel,
-    itemRestaurantModel
-};
+itemSchema.index({
+    name: 'text'
+});
+
+export default mongoose.model('Item', itemSchema);

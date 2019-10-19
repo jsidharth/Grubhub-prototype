@@ -34,7 +34,7 @@ userRouter.post("/login", passport.authenticate("login"), (req, res) => {
     });
 });
 
-userRouter.put("/update/:user_id", passport.authenticate("jwt"), (req, res) => {
+userRouter.put("/update/:user_id", (req, res) => {
   const userDetails = req.body;
   userDetails.user_id = req.params.user_id;
   return userService

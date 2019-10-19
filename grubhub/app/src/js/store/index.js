@@ -22,10 +22,9 @@ axios.interceptors.request.use( (config) => {
       return response;
  }, 
  function (error) {
-  if (error.response.status === 401) {
-    
+  if (error && error.response.status === 401) {
       toast.error('Unauthorized!');
-  } else if(error.response.status === 500) {
+  } else if(error && error.response.status === 500) {
       const msg = error.response.data.message ? error.response.data.message : 'Oops! Something went wrong!';
       toast.error(msg);
   }

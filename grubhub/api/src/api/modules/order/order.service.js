@@ -1,24 +1,20 @@
 import Promise from "bluebird";
 import _ from "lodash";
-import {
-  Orders,
-  Users,
-  Restaurants,
-  Items,
-  Items_Order
-} from "./../../../sequelize";
+import Order from "./order.model";
+import User from "./../user/user.model";
+import Item from "./../item/item.model";
+import Restaurant from "./../restaurant/restaurant.model";
 
 const getOrdersByRestaurant = restaurant_id => {
-  return Orders.findAll({
-    where: {
+  return Restaurant.findById(
       restaurant_id
-    }
-  }).then(allOrders => {
+    ).populate('orders')
+    .lean().then(restaurant => {
     let current_orders, past_orders;
-    current_orders = allOrders.filter(order =>
+    current_orders = restaurant.orders.filter(order =>
       ["NEW", "PREPARING", "READY"].includes(order.status)
     );
-    past_orders = allOrders.filter(order =>
+    past_orders = restaurant.orders.filter(order =>
       ["DELIVERED", "CANCELLED"].includes(order.status)
     );
     return {
@@ -29,89 +25,51 @@ const getOrdersByRestaurant = restaurant_id => {
 };
 
 const updateOrder = order_details => {
-  return Orders.findOne({
-    where: {
-      id: order_details.id
-    }
-  }).then(order => {
-    return order
-      .update({
-        status: order_details.status
-      })
-      .then(() => {
-        return getOrdersByRestaurant(order.restaurant_id);
-      });
-  });
-};
-
-const getOrderDetails = order_id => {
-  return Orders.findOne({
-    where: {
-      id: order_id
-    },
-    include: [
-      {
-        model: Users
-      },
-      {
-        model: Restaurants
-      }
-    ]
-  }).then(order => {
-    if (!order) {
-      throw new Error("Order not found!");
-    }
-    return Items_Order.findAll({
-      where: {
-        order_id: order.id
-      },
-      include: [
-        {
-          model: Items
-        }
-      ]
-    }).then(allItems => {
-      if (!allItems) {
-        throw new Error("Order without items");
-      }
-      let items = [];
-      if (allItems && allItems.length) {
-        items = allItems.map(eachItem => {
-          const { id, name, rate } = eachItem.item;
-          return {
-            id,
-            name,
-            rate,
-            quantity: eachItem.quantity
-          };
-        });
-      }
-      return {
-        id: order.id,
-        customer: {
-          name: order.user.first_name + " " + order.user.last_name,
-          address: order.user.address
-        },
-        items,
-        status: order.status,
-        amount: order.amount
-      };
+  return Order.findById(order_details.id).then(order => {
+    order.status = order_details.status;
+    return order.save().then(updatedOrder => {
+      return getOrdersByRestaurant(updatedOrder.restaurant_id)
     });
   });
 };
 
+const getOrderDetails = order_id => {
+  return Order.findById(order_id)
+  .populate('items.item_id')
+  .lean()
+  .then(order => {
+    const items = order.items.map(item => ({
+      id: item.item_id._id,
+      name: item.item_id.name,
+      quantity: item.quantity,
+      rate: item.item_id.rate
+    }));
+    return User.findOne({
+      orders: order_id
+    }).then(user => {
+      return {
+        id: order._id,
+        customer: {
+          name: user.first_name + " " + user.last_name,
+          address: user.address
+        },
+        items,
+        status: order.status,
+        amount: order.amount
+      }
+    })
+  })
+};
+
 const getOrdersByCustomer = user_id => {
-  return Orders.findAll({
-    where: {
-      user_id
-    }
-  }).then(allOrders => {
-    let current_orders = [],
-      past_orders = [];
-    current_orders = allOrders.filter(order =>
+  return User.findById(user_id)
+  .populate('orders')
+  .lean().then(user => {
+    let current_orders, past_orders;
+    current_orders = user.orders.filter(order =>
       ["NEW", "PREPARING", "READY"].includes(order.status)
     );
-    past_orders = allOrders.filter(order =>
+    past_orders = user.orders.filter(order =>
       ["DELIVERED", "CANCELLED"].includes(order.status)
     );
     return {
@@ -122,20 +80,33 @@ const getOrdersByCustomer = user_id => {
 };
 
 const createOrder = order_details => {
-  return Orders.create({
-    user_id: order_details.user_id,
-    restaurant_id: order_details.restaurant_id,
+  return Order.create({
     amount: order_details.total_amount,
     status: "NEW"
   }).then(order => {
-    return Promise.map(order_details.cart, item => {
-      return Items_Order.create({
-        item_id: item.id,
-        order_id: order.id,
-        quantity: item.quantity
+    if(order_details.cart && order_details.cart.length) {
+      order_details.cart.map(item => {
+        order.items.push({
+          item_id: item.id,
+          quantity: item.quantity
+        })
+      })
+    }
+    return order.save().then(updatedOrder => {
+      const restaurantOrderPromise = Restaurant.findById(order_details.restaurant_id).then(restaurant => {
+        restaurant.orders.push(updatedOrder._id)
+        return restaurant.save();
       });
-    }).then(() => {
-      return order;
+      const customerOrderPromise = User.findById(order_details.user_id).then(user => {
+        user.orders.push(updatedOrder._id)
+        return user.save();
+      });
+      return Promise.all(restaurantOrderPromise, customerOrderPromise).then(() => {
+        console.log("here")
+        return updatedOrder;
+      }).catch(err => {
+        console.log(err)
+      })
     });
   });
 };

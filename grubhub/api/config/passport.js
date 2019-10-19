@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwtSecret from "./jwtConfig"
-import { Users } from "../src/sequelize";
+import User from "../src/api/modules/user/user.model";
 const passport = require("passport"),
   localStrategy = require("passport-local").Strategy,
   JWTStrategy = require("passport-jwt").Strategy,
@@ -25,16 +25,14 @@ passport.use(
     },
     (username, password, done) => {
       try {
-        Users.findOne({
-          where: {
-            email: username
-          }
+        User.findOne({
+          email: username
         }).then(user => {
           if (user !== null) {
             return done(null, false);
           } else {
             bcrypt.hash(password, SALT_ROUND).then(hashPassword => {
-              Users.create({
+              User.create({
                 email: username,
                 password: hashPassword
               }).then(user => {
@@ -59,10 +57,8 @@ passport.use(
       session: false
     }, (username, password, done) => {
       try {
-        Users.findOne({
-          where: {
-            email: username
-          }
+        User.findOne({
+          email: username
         }).then(user => {
           if(!user) {
             return done(null, false)
@@ -91,11 +87,9 @@ const options = {
 passport.use('jwt',
 new JWTStrategy(options, (jwt_payload, done)=> {
   try{
-    Users.findOne({
-      where:{
-        id: jwt_payload.id
-      }
-    }).then(user => {
+    User.findById(
+      jwt_payload.id
+    ).then(user => {
       if(user) {
         done(null, true);
       } else {
