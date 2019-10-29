@@ -10,7 +10,9 @@ const orderSchema = new Schema({
         }
     ],
     status: String,
-    amount: Number
+    amount: Number,
+    owner_messages: [String],
+    customer_messages: [String]
 });
 
 export default mongoose.model('Order', orderSchema);

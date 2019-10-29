@@ -69,4 +69,15 @@ orderRouter.post("/confirm", (req, res) => {
   });
 });
 
+orderRouter.put("/messages/save", (req, res) => {
+  const message_details = req.body;
+  return orderService.saveMessages(message_details).then(result => {
+    res.status(200).json(result);
+  }).catch(err => {
+    res.status(500).json({
+      message: err.message
+    });
+  });
+});
+
 export default orderRouter;

@@ -13,6 +13,7 @@ import Search from './components/Search/Search';
 import SearchResults from './components/Search/SearchResults';
 import Restaurant from './components/Restaurant/Restaurant';
 import Cart from './components/Cart/Cart';
+import UpcomingOrderlist from './components/Order/UpcomingOrderlist';
 
 const Routes = () => {
   return (
@@ -22,6 +23,7 @@ const Routes = () => {
       <Route exact path="/signin" component={Signin} />
       <PrivateRoute exact path="/:id/account" component={Account} />
       <PrivateRoute exact path="/:id/order" component={OrderList} />
+      <PrivateRoute exact path="/:id/currentorder" component={UpcomingOrderlist} />
       <PrivateRoute exact path="/order/detail/:order_id" component={OrderDetail} />
       <PrivateRoute exact path="/:id/menu" component={OwnerMenu} />
       <PrivateRoute exact path="/item" component={Item} />

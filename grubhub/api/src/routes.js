@@ -9,6 +9,6 @@ const routes = express.Router();
 
 routes.use('/user', userController);
 routes.use('/restaurant', passport.authenticate('jwt'), restaurantController);
-routes.use('/order', passport.authenticate('jwt'), orderController);
+routes.use('/order', orderController);
 routes.use('/item', itemController);
 export default  routes;

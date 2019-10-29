@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import cellEditFactory, { Type } from "react-bootstrap-table2-editor";
+import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 import BootstrapTable from "react-bootstrap-table-next";
 import { ownerActions, userActions } from "../../js/actions/index";
 import { Link } from "react-router-dom";
@@ -123,13 +125,21 @@ class Order extends Component {
   };
 
   afterSaveCell = (oldValue, newValue, row) => {
+    console.log(row)
     const payload = {
-      id: row.id,
+      id: row._id,
       status: row.status
     };
     this.props.changeStatus(payload);
   };
-
+  paginationOptions = {
+    paginationSize: 4,
+    sizePerPageList: [{
+      text: '5', value: 5
+    }, {
+      text: '10', value: 10
+    }]
+  }
   render() {
     return (
       <div >
@@ -140,43 +150,49 @@ class Order extends Component {
           </div>
           {this.props.user.type === "Owner" ? (
             <div>
-              <BootstrapTable
-                keyField="id"
-                data={this.state.current_orders}
-                columns={this.state.current_order_columns}
-                bordered={true}
-                cellEdit={cellEditFactory({
-                  mode: "click",
-                  blurToSave: true,
-                  afterSaveCell: (oldValue, newValue, row) => {
-                    this.afterSaveCell(oldValue, newValue, row);
-                  }
-                })}
-              />
+              <div>
+                <BootstrapTable
+                  keyField="_id"
+                  data={this.state.current_orders}
+                  columns={this.state.current_order_columns}
+                  bordered={true}
+                  cellEdit={cellEditFactory({
+                    mode: "click",
+                    blurToSave: true,
+                    afterSaveCell: (oldValue, newValue, row) => {
+                      console.log(oldValue, newValue, row)
+                      this.afterSaveCell(oldValue, newValue, row);
+                    }
+                  })}
+                  pagination={ paginationFactory(this.paginationOptions) }
+                />
+              </div>
+              <div>
+              <h3>Past Orders</h3>
+              </div>
+              <div>
+                <BootstrapTable
+                  keyField="_id"
+                  data={this.state.past_orders}
+                  columns={this.state.past_orders_coloumns}
+                  bordered={true}
+                  pagination={ paginationFactory(this.paginationOptions) }
+                />
+              </div>
             </div>
+            
           ) : (
             <div>
               <BootstrapTable
-                keyField="id"
-                data={this.state.current_orders}
-                columns={this.state.current_order_columns}
+                keyField="_id"
+                data={this.state.past_orders}
+                columns={this.state.past_orders_coloumns}
                 bordered={true}
+                pagination={ paginationFactory(this.paginationOptions) }
               />
             </div>
           )}
-
-          <div>
-          <h3>Past Orders</h3>
           </div>
-          <div>
-            <BootstrapTable
-              keyField="id"
-              data={this.state.past_orders}
-              columns={this.state.past_orders_coloumns}
-              bordered={true}
-            />
-          </div>
-        </div>
         <ToastContainer autoClose={2000} />
       </div>
     );

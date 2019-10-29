@@ -76,6 +76,7 @@ const getUser = payload => {
       });
   };
 };
+
 const uploadProfileImage = payload => {
   return dispatch => {
     return axios
@@ -90,4 +91,21 @@ const uploadProfileImage = payload => {
       });
   };
 };
-export { addUser, loginUser, updateUser, getUser, uploadProfileImage };
+
+const sendMessage = payload => {
+  return dispatch => {
+    return axios.put(
+      `http://localhost:3001/order/messages/save`,
+        payload
+    ).then(response => {
+      if (response.status === 200) {
+        toast.success("Message send successfully");
+      }
+      dispatch({
+        type: actionTypes.SET_ORDER_DETAIL,
+        payload: response.data
+      });
+    });
+  }
+}
+export { addUser, loginUser, updateUser, getUser, uploadProfileImage, sendMessage };

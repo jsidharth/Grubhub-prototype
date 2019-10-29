@@ -58,7 +58,6 @@ const loginUser = userCredentials => {
       address,
       image
     } = user;
-    console.log(user);
     const restaurant = user.restaurant || '';
     return {
       id,

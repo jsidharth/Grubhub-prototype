@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import _ from 'lodash';
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
+import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 import filterFactory, { selectFilter } from 'react-bootstrap-table2-filter';
 import BootstrapTable from "react-bootstrap-table-next";
 import Navigationbar from "../Navigationbar/Navigationbar";
@@ -67,6 +69,7 @@ class SearchResults extends Component {
           columns={this.state.restaurant_list_coloumns}
           filter={ filterFactory() }
           bordered={true}
+          pagination={ paginationFactory() }
         />
       </div>): (
           <div>

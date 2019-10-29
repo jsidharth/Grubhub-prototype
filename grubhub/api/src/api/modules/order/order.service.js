@@ -28,7 +28,11 @@ const updateOrder = order_details => {
   return Order.findById(order_details.id).then(order => {
     order.status = order_details.status;
     return order.save().then(updatedOrder => {
-      return getOrdersByRestaurant(updatedOrder.restaurant_id)
+      return Restaurant.findOne({
+        orders: updatedOrder._id
+      }).then(restaurant => {
+        return getOrdersByRestaurant(restaurant._id)
+      })
     });
   });
 };
@@ -55,7 +59,9 @@ const getOrderDetails = order_id => {
         },
         items,
         status: order.status,
-        amount: order.amount
+        amount: order.amount,
+        owner_messages: order.owner_messages,
+        customer_messages: order.customer_messages
       }
     })
   })
@@ -102,19 +108,42 @@ const createOrder = order_details => {
         return user.save();
       });
       return Promise.all(restaurantOrderPromise, customerOrderPromise).then(() => {
-        console.log("here")
         return updatedOrder;
       }).catch(err => {
-        console.log(err)
+        throw new Error({
+          message: 'Something went wrong'
+        })
       })
     });
   });
 };
 
+const saveMessages = message_details => {
+  return Order.findById(
+    message_details.order_id
+  ).then(order => {
+    if(!order) {
+      throw new Error('Order doesn\'t exist');
+    }
+    if(message_details.user_type === 'Owner') {
+      order.customer_messages.push(message_details.body);
+    } else {
+      order.owner_messages.push(message_details.body);
+    }
+    return order.save().then(updatedOrder => {
+      return getOrderDetails(updatedOrder._id)
+    })
+  }).catch(err => {
+    throw new Error({
+      message: 'Something went wrong while saving messages'
+    })
+  })
+}
 export {
   getOrdersByRestaurant,
   updateOrder,
   getOrderDetails,
   getOrdersByCustomer,
-  createOrder
+  createOrder,
+  saveMessages
 };
