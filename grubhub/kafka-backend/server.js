@@ -28,7 +28,8 @@ import * as getItemDetails from "./services/Item/getItemDetails";
 import * as updateItem from "./services/Item/updateItem";
 import * as deleteItem from "./services/Item/deleteItem";
 import * as searchItem from "./services/Item/searchItem";
-
+//Image topic files
+import * as uploadImage from "./services/Image/uploadImage";
 
 mongoose
   .connect("mongodb://localhost:27017/grubhub", { useNewUrlParser: true })
@@ -98,3 +99,5 @@ handleTopicRequest("item.update", updateItem);
 handleTopicRequest("item.delete", deleteItem);
 handleTopicRequest("item.search", searchItem);
 
+//Upload Image
+handleTopicRequest("image.upload", uploadImage);

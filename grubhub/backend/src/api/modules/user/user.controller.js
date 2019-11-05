@@ -2,7 +2,7 @@ import express from "express";
 import passport from "passport";
 import { multerUploads, dataUri } from "./../../../multer";
 import * as userService from "./user.service";
-import { cloudinaryConfig } from "./../../../../config/cloudinaryConfig";
+import { cloudinaryConfig, uploader} from "./../../../../config/cloudinaryConfig";
 import kafka from "../../../../kafka/client";
 
 const userRouter = express.Router();
@@ -34,7 +34,7 @@ userRouter.post("/login", passport.authenticate("login"), (req, res) => {
 userRouter.put("/update/:user_id", (req, res) => {
   const userDetails = req.body;
   userDetails.user_id = req.params.user_id;
-  kafka.make_request("user.details.update", userDetails, (err, results) => {
+  kafka.make_request("user.detail.update", userDetails, (err, results) => {
     if (err) {
       res.status(500).json({
         message: err.message
@@ -58,19 +58,25 @@ userRouter.post(
         message: "No file Uploaded"
       });
     }
-    userService
-      .uploadImage({
-        file,
-        user_id: req.params.user_id
-      })
-      .then(result => {
-        res.status(200).json(result);
-      })
-      .catch(err => {
-        res.status(500).json({
-          message: err.message
-        });
+    return uploader
+    .upload(file, {
+      transformation: [{ width: 150, height: 100, crop: "scale" }]
+    }).then(result => {
+      const image = result.url;
+      const imageDetails = {
+        url: image,
+        user_id: req.params.user_id,
+        type: 'User'
+      };
+      kafka.make_request("image.upload", imageDetails, (err, results) => {
+        if (err) {
+          res.status(500).json({
+            message: err.message
+          });
+        }
+        res.status(200).json(results);
       });
+    });
   }
 );
 

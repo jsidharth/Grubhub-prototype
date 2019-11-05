@@ -28,7 +28,7 @@ const handle_request = (userDetails, callback) => {
             user: updatedUser,
             restaurant
           });
-        });
+        })
       } else {
         callback(null, {
           user: updatedUser

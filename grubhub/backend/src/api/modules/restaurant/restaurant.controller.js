@@ -2,7 +2,7 @@ import express from "express";
 import passport from "passport";
 import * as restaurantService from "./restaurant.service";
 import {multerUploads, dataUri} from './../../../multer';
-import {cloudinaryConfig } from './../../../../config/cloudinaryConfig'
+import {cloudinaryConfig, uploader} from './../../../../config/cloudinaryConfig'
 import kafka from "../../../../kafka/client";
 
 const restaurantRouter = express.Router();
@@ -76,16 +76,25 @@ restaurantRouter.post("/upload/image/restaurant/:restaurant_id", multerUploads, 
       message: 'No file Uploaded'
     });
   }
-  restaurantService.uploadImage({
-    file,
-    restaurant_id: req.params.restaurant_id
-  }).then(result => {
-    res.status(200).json(result);
-  }).catch(err => {
-    res.status(500).json({
-          message: err.message
+  return uploader
+    .upload(file, {
+      transformation: [{ width: 150, height: 100, crop: "scale" }]
+    }).then(result => {
+      const image = result.url;
+      const imageDetails = {
+        url: image,
+        restaurant_id: req.params.restaurant_id,
+        type: 'Restaurant'
+      };
+      kafka.make_request("image.upload", imageDetails, (err, results) => {
+        if (err) {
+          res.status(500).json({
+            message: err.message
+          });
+        }
+        res.status(200).json(results);
       });
-  });
+    });
 });
 
 export default restaurantRouter;

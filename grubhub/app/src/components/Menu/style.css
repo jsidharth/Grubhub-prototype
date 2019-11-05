@@ -18,3 +18,11 @@
   margin-left: -1px;
   padding: 20px;
 }
+
+.menu_pagination {
+  max-width: unset;
+  margin: 0;
+  padding: 30px 0 !important;
+  padding-left: 330px !important;
+  padding-right: 30px !important;
+}

@@ -1,7 +1,7 @@
 import express from "express";
 import * as itemService from "./item.service";
 import { multerUploads, dataUri } from "./../../../multer";
-import { cloudinaryConfig } from "./../../../../config/cloudinaryConfig";
+import { cloudinaryConfig, uploader } from "./../../../../config/cloudinaryConfig";
 import kafka from "../../../../kafka/client";
 
 const itemRouter = express.Router();
@@ -79,19 +79,25 @@ itemRouter.post(
         message: "No file Uploaded"
       });
     }
-    itemService
-      .uploadImage({
-        file,
-        item_id: req.params.item_id
-      })
-      .then(result => {
-        res.status(200).json(result);
-      })
-      .catch(err => {
-        res.status(500).json({
-          message: err.message
-        });
+    return uploader
+    .upload(file, {
+      transformation: [{ width: 150, height: 100, crop: "scale" }]
+    }).then(result => {
+      const image = result.url;
+      const imageDetails = {
+        url: image,
+        item_id: req.params.item_id,
+        type: 'Item'
+      };
+      kafka.make_request("image.upload", imageDetails, (err, results) => {
+        if (err) {
+          res.status(500).json({
+            message: err.message
+          });
+        }
+        res.status(200).json(results);
       });
+    });
   }
 );
 
