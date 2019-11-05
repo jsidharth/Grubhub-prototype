@@ -1,11 +1,11 @@
 import actionTypes from "../constants/index";
 import axios from "axios";
 import { toast } from "react-toastify";
-
+import config from "./../../config";
 const getSearchResults = (payload, ownProps) => {
   return dispatch => {
     return axios
-      .get(`http://localhost:3001/item/customer/search`, {
+      .get(`${config.base_url}item/customer/search`, {
         params: {
           key: payload.search
         }
@@ -25,7 +25,7 @@ const getSearchResults = (payload, ownProps) => {
 const getRestaurantDetails = payload => {
   return dispatch => {
     return axios
-      .get(`http://localhost:3001/restaurant/detail/${payload.restaurant_id}`)
+      .get(`${config.base_url}restaurant/detail/${payload.restaurant_id}`)
       .then(response => {
         if (response.status === 200) {
           dispatch({
@@ -47,7 +47,7 @@ const placeOrder = (payload, ownProps) => {
   return dispatch => {
     console.log("here", payload);
     return axios
-      .post("http://localhost:3001/order/confirm", payload)
+      .post(`${config.base_url}order/confirm`, payload)
       .then(response => {
         if (response.status === 200) {
           dispatch({ type: actionTypes.CLEAR_CART, payload: response.data });

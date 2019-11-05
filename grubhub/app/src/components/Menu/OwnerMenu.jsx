@@ -78,11 +78,13 @@ class OwnerMenu extends Component {
   };
 
   render() {
-    const indexOfLastItem = this.state.active_page * this.state.sections_per_page;
-        const indexOfFirstItem = indexOfLastItem - this.state.sections_per_page;
-        const currentSections = this.state.menu && this.state.menu.length ?
-          this.state.menu.slice(indexOfFirstItem, indexOfLastItem) : [];
-        console.log(currentSections)
+    const indexOfLastItem =
+      this.state.active_page * this.state.sections_per_page;
+    const indexOfFirstItem = indexOfLastItem - this.state.sections_per_page;
+    const currentSections =
+      this.state.menu && this.state.menu.length
+        ? this.state.menu.slice(indexOfFirstItem, indexOfLastItem)
+        : [];
     return (
       <div>
         <Sidebar />

@@ -2,11 +2,12 @@ import actionTypes from "../constants/index";
 import axios from "axios";
 import cookie from "js-cookie";
 import { toast } from "react-toastify";
+import config from "../../config";
 
 const addUser = (payload, ownProps) => {
   return dispatch => {
     return axios
-      .post("http://localhost:3001/user/register", payload)
+      .post(`${config.base_url}user/register`, payload)
       .then(response => {
         if (response.status === 200) {
           const userData = response.data;
@@ -21,7 +22,7 @@ const addUser = (payload, ownProps) => {
 const loginUser = (payload, ownProps) => {
   return dispatch => {
     return axios
-      .post("http://localhost:3001/user/login", payload)
+      .post(`${config.base_url}user/login`, payload)
       .then(response => {
         if (response.status === 200) {
           const userData = response.data;
@@ -45,7 +46,7 @@ const loginUser = (payload, ownProps) => {
 const updateUser = payload => {
   return dispatch => {
     return axios
-      .put(`http://localhost:3001/user/update/${payload.id}`, payload)
+      .put(`${config.base_url}user/update/${payload.id}`, payload)
       .then(response => {
         if (response.status === 200) {
           const userData = response.data.user;
@@ -67,7 +68,7 @@ const updateUser = payload => {
 const getUser = payload => {
   return dispatch => {
     return axios
-      .get(`http://localhost:3001/user/getdetails/${payload.user_id}`)
+      .get(`${config.base_url}user/getdetails/${payload.user_id}`)
       .then(response => {
         if (response.status === 200) {
           const userData = response.data;
@@ -81,7 +82,7 @@ const uploadProfileImage = payload => {
   return dispatch => {
     return axios
       .post(
-        `http://localhost:3001/user/upload/image/profile/${payload.user_id}`,
+        `${config.base_url}user/upload/image/profile/${payload.user_id}`,
         payload.data
       )
       .then(response => {
@@ -95,7 +96,7 @@ const uploadProfileImage = payload => {
 const sendMessage = payload => {
   return dispatch => {
     return axios.put(
-      `http://localhost:3001/order/messages/save`,
+      `${config.base_url}order/messages/save`,
         payload
     ).then(response => {
       if (response.status === 200) {

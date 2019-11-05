@@ -1,11 +1,12 @@
 import actionTypes from "../constants/index";
 import axios from "axios";
 import { toast } from "react-toastify";
+import config from "../../config";
 
 const getRestaurant = payload => {
   return dispatch => {
     return axios
-      .get(`http://localhost:3001/restaurant/${payload.restaurant_id}`)
+      .get(`${config.base_url}restaurant/${payload.restaurant_id}`)
       .then(response => {
         if (response.status === 200) {
           dispatch({
@@ -20,7 +21,7 @@ const getRestaurant = payload => {
 const getRestaurantOrders = payload => {
   return dispatch => {
     return axios
-      .get(`http://localhost:3001/order/restaurant/${payload.id}`)
+      .get(`${config.base_url}order/restaurant/${payload.id}`)
       .then(response => {
         if (response.status === 200) {
           dispatch({
@@ -35,7 +36,7 @@ const getRestaurantOrders = payload => {
 const changeStatus = payload => {
   return dispatch => {
     return axios
-      .put(`http://localhost:3001/order/update/${payload.id}`, {
+      .put(`${config.base_url}order/update/${payload.id}`, {
         status: payload.status
       })
       .then(response => {
@@ -52,7 +53,7 @@ const changeStatus = payload => {
 const getOrderDetail = payload => {
   return dispatch => {
     return axios
-      .get(`http://localhost:3001/order/${payload.order_id}`)
+      .get(`${config.base_url}order/${payload.order_id}`)
       .then(response => {
         if (response.status === 200) {
           dispatch({
@@ -67,7 +68,7 @@ const getOrderDetail = payload => {
 const getMenu = payload => {
   return dispatch => {
     return axios
-      .get(`http://localhost:3001/restaurant/menu/${payload.restaurant_id}`)
+      .get(`${config.base_url}restaurant/menu/${payload.restaurant_id}`)
       .then(response => {
         if (response.status === 200) {
           dispatch({
@@ -82,7 +83,7 @@ const getMenu = payload => {
 const getCustomerOrders = payload => {
   return dispatch => {
     return axios
-      .get(`http://localhost:3001/order/customer/${payload.id}`)
+      .get(`${config.base_url}order/customer/${payload.id}`)
       .then(response => {
         if (response.status === 200) {
           dispatch({
@@ -97,7 +98,7 @@ const getCustomerOrders = payload => {
 const editSection = payload => {
   return dispatch => {
     return axios
-      .put("http://localhost:3001/restaurant/menu/section", payload)
+      .put(`${config.base_url}restaurant/menu/section`, payload)
       .then(response => {
         if (response.status === 200) {
           dispatch({
@@ -113,7 +114,7 @@ const editSection = payload => {
 const deleteSection = payload => {
   return dispatch => {
     return axios
-      .put("http://localhost:3001/restaurant/menu/section/delete", payload)
+      .put(`${config.base_url}restaurant/menu/section/delete`, payload)
       .then(response => {
         if (response.status === 200) {
           dispatch({
@@ -130,7 +131,7 @@ const uploadRestaurantImage = payload => {
   return dispatch => {
     return axios
       .post(
-        `http://localhost:3001/restaurant/upload/image/restaurant/${payload.restaurant_id}`,
+        `${config.base_url}restaurant/upload/image/restaurant/${payload.restaurant_id}`,
         payload.data
       )
       .then(response => {
