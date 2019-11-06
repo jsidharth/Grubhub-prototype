@@ -3,7 +3,7 @@ import Order from "../../models/order.model";
 import User from "../../models/user.model";
 
 const handle_request = (order_id, callback) => {
-  Order.findById(order_id)
+  return Order.findById(order_id)
     .populate("items.item_id")
     .lean()
     .then(order => {

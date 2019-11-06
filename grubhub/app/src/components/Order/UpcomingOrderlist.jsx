@@ -99,7 +99,7 @@ class Order extends Component {
         {<Navigationbar />}
         <div className="order_list">
           <div>
-            <h3>Past Orders</h3>
+            <h3>Upcoming Orders</h3>
           </div>
           <DragDropContext onDragEnd={this.onDragEnd}>
             {

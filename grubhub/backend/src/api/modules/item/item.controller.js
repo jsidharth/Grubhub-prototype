@@ -21,7 +21,9 @@ itemRouter.post("/add", (req, res) => {
 itemRouter.get("/:item_id", (req, res) => {
   const item_id = req.params.item_id;
   kafka.make_request("item.details", item_id, (err, results) => {
+    //console.log('Response', err, results)
     if (err) {
+      console.log('Here')
       res.status(500).json({
         message: err.message
       });
@@ -34,11 +36,13 @@ itemRouter.put("/update", (req, res) => {
   const item_details = req.body;
   kafka.make_request("item.update", item_details, (err, results) => {
     if (err) {
+      console.log(err, "here")
       res.status(500).json({
         message: err.message
       });
+    } else {
+      res.status(200).json(results);
     }
-    res.status(200).json(results);
   });
 });
 

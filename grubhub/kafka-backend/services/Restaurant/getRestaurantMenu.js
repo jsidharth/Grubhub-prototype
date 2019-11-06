@@ -2,7 +2,7 @@ import _ from "lodash";
 import Restaurant from "../../models/restaurant.model";
 
 const handle_request = (restaurant_id, callback) => {
-  Restaurant.findById(restaurant_id)
+  return Restaurant.findById(restaurant_id)
     .populate("items")
     .lean()
     .then(restaurant => {

@@ -7,6 +7,8 @@ import Sidebar from "./../Sidebar/Sidebar";
 import Navigationbar from "./../Navigationbar/Navigationbar";
 import "./style.css";
 import { Accordion, Card } from "react-bootstrap";
+import { ToastContainer } from 'react-toastify';
+
 const columns = [
   {
     dataField: "name",
@@ -33,10 +35,10 @@ class Orderdetail extends Component {
         status: "",
         amount: "",
         items: [],
-        message: "",
         owner_messages: [],
         customer_messages: []
-      }
+      },
+      message: ""
     };
   }
   componentDidMount() {
@@ -63,10 +65,10 @@ class Orderdetail extends Component {
         status,
         amount,
         items,
-        message: "",
         owner_messages,
         customer_messages
-      }
+      },
+      message: ""
     });
   }
   handleChange = e => {
@@ -180,7 +182,7 @@ class Orderdetail extends Component {
                 />
               </div>
             </div>
-            {this.props.user.type === "Owner" ? (
+            {
               this.state.order.owner_messages &&
               this.state.order.owner_messages.length ? (
                 <div className="form-group row">
@@ -209,8 +211,8 @@ class Orderdetail extends Component {
                     </Accordion>
                   </div>
                 </div>
-              ) : null
-            ) : this.state.order.customer_messages &&
+              ) : null}
+            {this.state.order.customer_messages &&
               this.state.order.customer_messages.length ? (
               <div className="form-group row">
                 <label
@@ -255,17 +257,18 @@ class Orderdetail extends Component {
                 <button
                   className="btn btn-primary m-3"
                   onClick={this.handleMessage}>
-                  Send Message
+                  Send Message 
                 </button>
               </div>
             </div>
           </form>
         </div>
+        <ToastContainer autoClose={2000} />
       </div>
     );
   }
 }
-
+//TODO: Addd message toast on succes, Clear the text area after message send
 const mapStateToProps = state => ({
   order: state.order.active,
   user: state.user

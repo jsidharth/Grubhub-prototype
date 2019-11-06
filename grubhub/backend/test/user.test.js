@@ -4,31 +4,28 @@ var app = require('../src/app');
 var chai = require('chai');
 chai.use(require('chai-http'));
 var expect = require('chai').expect;
-var agent = require('chai').request.agent(app);
+var agent = require('chai').request.agent(app).keepOpen();
 
 
 describe('GET User /getdetails', function() {
     it('Should have valid user details',function(done){
-        agent.get(`/user/getdetails/1`)
+        agent.get(`/user/getdetails/5da8b692cd09720dfd278981`)
             .then(function(res){
                 expect(res.body.first_name).to.equal('Sidharth');
                 expect(res.body.last_name).to.equal('Jayaprakash');
                 expect(res.body.email).to.equal('sidharthjayaprakash93@gmail.com');
-                expect(res.body.type).to.equal('Customer');
+                expect(res.body.type).to.equal('Owner');
                 done();
-            });
+            }).catch(done())
     });
 
     it('Should display error message for invalid user',function(done){
-        agent.get(`/user/getdetails/10`)
+        agent.get(`/user/getdetails/5da8b692cd09720dfd278000`)
             .then(function(res){
-                expect(res.body.message).to.equal('User not found!');
+                expect(res.body.message).to.equal('User not found');
                 expect(res.status).to.equal(500);
                 done();
-            }).catch(err => {
-                console.log(err.message);
-                done();
-            })
+            }).catch(done())
     });
 });
 

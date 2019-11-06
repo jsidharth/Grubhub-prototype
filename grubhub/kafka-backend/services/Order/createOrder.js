@@ -17,7 +17,7 @@ const handle_request = (order_details, callback) => {
         });
       });
     }
-    order.save().then(updatedOrder => {
+    return order.save().then(updatedOrder => {
       const restaurantOrderPromise = Restaurant.findById(
         order_details.restaurant_id
       ).then(restaurant => {
@@ -30,11 +30,12 @@ const handle_request = (order_details, callback) => {
           return user.save();
         }
       );
-      return Promise.all(restaurantOrderPromise, customerOrderPromise)
+      return Promise.all([restaurantOrderPromise, customerOrderPromise])
         .then(() => {
           callback(null, updatedOrder);
         })
-        .catch(() => {
+        .catch(err => {
+          console.log(err);
           callback(
             {
               message: "Something went wrong"

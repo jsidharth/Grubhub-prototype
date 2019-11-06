@@ -32,7 +32,7 @@ import * as searchItem from "./services/Item/searchItem";
 import * as uploadImage from "./services/Image/uploadImage";
 
 mongoose
-  .connect("mongodb://localhost:27017/grubhub", { useNewUrlParser: true })
+  .connect("mongodb://localhost:27017/grubhub", { useNewUrlParser: true})
   .then(() => {
     console.log("Connection to mongo successfull");
   })
@@ -57,7 +57,8 @@ function handleTopicRequest(topic_name, fname) {
           topic: data.replyTo,
           messages: JSON.stringify({
             correlationId: data.correlationId,
-            data: res
+            data: res,
+            err
           }),
           partition: 0
         }

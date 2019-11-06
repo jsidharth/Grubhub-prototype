@@ -1,5 +1,5 @@
 var crypto = require("crypto");
-var conn = require("./Connection");
+var conn = require("./connection");
 
 var TIMEOUT = 16000; //time to wait for response in ms
 var self;
@@ -92,7 +92,12 @@ KafkaRPC.prototype.setupResponseQueue = function(producer, topic_name, next) {
       //delete the entry from hash
       delete self.requests[correlationId];
       //callback, no err
-      entry.callback(null, data.data);
+      if(!data.err) {
+        entry.callback(null, data.data);
+      } else {
+        entry.callback(data.err, null);
+      }
+      
     }
   });
   self.response_queue = true;
