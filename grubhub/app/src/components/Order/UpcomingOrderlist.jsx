@@ -21,11 +21,9 @@ class Order extends Component {
   }
 
   componentDidMount() {
-    if (this.props.user.type === "Customer") {
-      this.props.getCustomerOrders({
-        id: this.props.match.params.id
-      });
-    }
+    this.props.getCustomerOrders({
+      id: this.props.match.params.id
+    });
   }
 
   componentWillReceiveProps(nextProps) {

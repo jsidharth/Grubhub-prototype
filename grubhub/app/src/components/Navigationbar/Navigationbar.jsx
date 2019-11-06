@@ -47,7 +47,7 @@ class Navigationbar extends Component {
               id="basic-nav-dropdown"
               drop="left">
                 <NavDropdown.Item href={`/${this.state.user.id}/account`}>Account</NavDropdown.Item>
-                <NavDropdown.Item href={`/${this.state.user.id}/order`}>Past Orders</NavDropdown.Item>
+                <NavDropdown.Item href={`/${this.state.user.id}/pastorder`}>Past Orders</NavDropdown.Item>
                 <NavDropdown.Item href={`/${this.state.user.id}/currentorder`}>Current Orders</NavDropdown.Item>
                 <NavDropdown.Item href={`/${this.state.user.id}/cart`}>Cart</NavDropdown.Item>
               <NavDropdown.Divider />

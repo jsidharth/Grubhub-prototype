@@ -1,0 +1,226 @@
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
+import cellEditFactory, { Type } from "react-bootstrap-table2-editor";
+import "react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css";
+import paginationFactory from "react-bootstrap-table2-paginator";
+import BootstrapTable from "react-bootstrap-table-next";
+import { ownerActions, userActions } from "../../js/actions/index";
+import { Link } from "react-router-dom";
+import Sidebar from "./../Sidebar/Sidebar";
+import Navigationbar from "./../Navigationbar/Navigationbar";
+import { ToastContainer, toast } from "react-toastify";
+class Order extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      current_orders: [],
+      past_orders: [],
+      past_orders_coloumns: [
+        {
+          dataField: "_id",
+          text: "Order ID",
+          formatter: this.orderIdFormatter
+        },
+        {
+          dataField: "amount",
+          text: "Order Amount"
+        },
+        {
+          dataField: "status",
+          text: "Order Status"
+        }
+      ],
+      current_order_columns: [
+        {
+          dataField: "_id",
+          text: "Order ID",
+          formatter: this.orderIdFormatter
+        },
+        {
+          dataField: "amount",
+          text: "Order Amount"
+        },
+        {
+          dataField: "status",
+          text: "Order Status",
+          editor: {
+            type: Type.SELECT,
+            options: [
+              {
+                label: "New",
+                value: "NEW"
+              },
+              {
+                label: "Preparing",
+                value: "PREPARING"
+              },
+              {
+                label: "Ready",
+                value: "READY"
+              },
+              {
+                label: "Delivered",
+                value: "DELIVERED"
+              },
+              {
+                label: "Cancelled",
+                value: "CANCELLED"
+              }
+            ]
+          }
+        }
+      ]
+    };
+  }
+
+  componentDidMount() {
+    this.props.getCustomerOrders({
+        id: this.props.match.params.id
+      });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.restaurant.id && nextProps.user.type === "Owner") {
+      nextProps.getRestaurant({
+        user_id: this.props.match.params.id
+      });
+    }
+    if (
+      (nextProps.order.current_orders &&
+        nextProps.order.current_orders.length) ||
+      (nextProps.order.past_orders && nextProps.order.past_orders.length)
+    ) {
+      this.setState({
+        current_orders: nextProps.order.current_orders,
+        past_orders: nextProps.order.past_orders
+      });
+    } else {
+      if (nextProps.user.type === "Owner") {
+        nextProps.getRestaurantOrders({
+          id: nextProps.restaurant.id
+        });
+      } else {
+        nextProps.getCustomerOrders({
+          id: nextProps.match.params.id
+        });
+      }
+      this.setState({
+        current_orders: nextProps.order.current_orders,
+        past_orders: nextProps.order.past_orders
+      });
+    }
+  }
+
+  //Link to detail page for order ID
+  orderIdFormatter = (cell, row) => {
+    let detailpage_link = `/order/detail/${row._id}`;
+    return <Link to={detailpage_link}>{cell}</Link>;
+  };
+
+  afterSaveCell = (oldValue, newValue, row) => {
+    console.log(row);
+    const payload = {
+      id: row._id,
+      status: row.status
+    };
+    this.props.changeStatus(payload);
+  };
+  paginationOptions = {
+    paginationSize: 4,
+    sizePerPageList: [
+      {
+        text: "5",
+        value: 5
+      },
+      {
+        text: "10",
+        value: 10
+      }
+    ]
+  };
+  render() {
+    return (
+      <div>
+        {this.props.user.type === "Owner" ? <Sidebar /> : <Navigationbar />}
+        <div className="order_list">
+          {this.props.user.type === "Owner" ? (
+            <div>
+              <div>
+                <h3>Current Orders</h3>
+              </div>
+              <div>
+                <BootstrapTable
+                  keyField="_id"
+                  data={this.state.current_orders}
+                  columns={this.state.current_order_columns}
+                  bordered={true}
+                  cellEdit={cellEditFactory({
+                    mode: "click",
+                    blurToSave: true,
+                    afterSaveCell: (oldValue, newValue, row) => {
+                      console.log(oldValue, newValue, row);
+                      this.afterSaveCell(oldValue, newValue, row);
+                    }
+                  })}
+                  pagination={paginationFactory(this.paginationOptions)}
+                />
+              </div>
+              <div>
+                <h3>Past Orders</h3>
+              </div>
+              <div>
+                <BootstrapTable
+                  keyField="_id"
+                  data={this.state.past_orders}
+                  columns={this.state.past_orders_coloumns}
+                  bordered={true}
+                  pagination={paginationFactory(this.paginationOptions)}
+                />
+              </div>
+            </div>
+          ) : (
+            <div>
+               <div>
+                <h3>Past Orders</h3>
+              </div>
+              <div>
+              <BootstrapTable
+                keyField="_id"
+                data={this.state.past_orders}
+                columns={this.state.past_orders_coloumns}
+                bordered={true}
+                pagination={paginationFactory(this.paginationOptions)}
+              />
+              </div>
+            </div>
+          )}
+        </div>
+        <ToastContainer autoClose={2000} />
+      </div>
+    );
+  }
+}
+
+const mapStateToProps = state => {
+  return {
+    user: state.user,
+    restaurant: state.restaurant,
+    order: state.order
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  getRestaurantOrders: payload =>
+    dispatch(ownerActions.getRestaurantOrders(payload)),
+  changeStatus: payload => dispatch(ownerActions.changeStatus(payload)),
+  getCustomerOrders: payload =>
+    dispatch(ownerActions.getCustomerOrders(payload)),
+  getUser: payload => dispatch(userActions.getUser(payload)),
+  getRestaurant: payload => dispatch(ownerActions.getRestaurant(payload))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Order);
