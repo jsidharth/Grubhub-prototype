@@ -1,6 +1,4 @@
 import express from "express";
-import passport from "passport";
-import * as restaurantService from "./restaurant.service";
 import {multerUploads, dataUri} from './../../../multer';
 import {cloudinaryConfig, uploader} from './../../../../config/cloudinaryConfig'
 import kafka from "../../../../kafka/client";

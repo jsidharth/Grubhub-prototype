@@ -1,7 +1,6 @@
 import express from "express";
 import passport from "passport";
 import { multerUploads, dataUri } from "./../../../multer";
-import * as userService from "./user.service";
 import { cloudinaryConfig, uploader} from "./../../../../config/cloudinaryConfig";
 import kafka from "../../../../kafka/client";
 
@@ -31,7 +30,7 @@ userRouter.post("/login", passport.authenticate("login"), (req, res) => {
   });
 });
 
-userRouter.put("/update/:user_id", (req, res) => {
+userRouter.put("/update/:user_id", passport.authenticate('jwt'), (req, res) => {
   const userDetails = req.body;
   userDetails.user_id = req.params.user_id;
   kafka.make_request("user.detail.update", userDetails, (err, results) => {
@@ -49,6 +48,7 @@ userRouter.post(
   "/upload/image/profile/:user_id",
   multerUploads,
   cloudinaryConfig,
+  passport.authenticate('jwt'),
   (req, res) => {
     let file;
     if (req.file) {
@@ -80,7 +80,7 @@ userRouter.post(
   }
 );
 
-userRouter.get("/getdetails/:id", (req, res) => {
+userRouter.get("/getdetails/:id", passport.authenticate('jwt'), (req, res) => {
   kafka.make_request("user.details", req.params.id, (err, results) => {
     if (err) {
       res.status(500).json({
